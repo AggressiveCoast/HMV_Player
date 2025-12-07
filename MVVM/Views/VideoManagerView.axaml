@@ -1,0 +1,65 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:videoManagement="clr-namespace:HMV_Player.Controls.VideoManagement"
+             xmlns:vm="clr-namespace:HMV_Player.MVVM.ViewModels"
+             xmlns:views="clr-namespace:HMV_Player.MVVM.Views"
+             xmlns:vmVideoManagement="clr-namespace:HMV_Player.MVVM.ViewModels.VideoManager"
+             xmlns:vVideoManagement="clr-namespace:HMV_Player.MVVM.Views.VideoManager"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HMV_Player.MVVM.Views.VideoManagerView"
+             x:DataType="vm:VideoManagerViewModel"
+             x:Name="Root">
+
+    <Panel>
+        <Grid RowDefinitions="40, *">
+            <StackPanel Grid.Row="0" Background="Gray" Orientation="Horizontal" Spacing="10">
+                <Button Content="Refresh Videos" Command="{Binding RefreshVideos}"></Button>
+                <Button Content="Set Base Directory" Command="{Binding OnSelectBaseDirectoryClicked}"/>
+                <TextBlock VerticalAlignment="Center" Background="Transparent" Foreground="White" Text="{Binding CurrentVideoBaseDirectoryDisplayString }"></TextBlock>
+            </StackPanel>
+            <ScrollViewer Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding VidCards}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="16" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <videoManagement:VidCard
+                                Title="{Binding Title}"
+                                ThumbnailUrl="{Binding ImageSrc}"
+                                Command="{Binding #Root.((vm:VideoManagerViewModel)DataContext).OpenVideoDetailsCommand}"
+                                CommandParameter="{Binding}"
+                                Width="320"
+                                Height="240"
+                                Margin="8" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+        <!-- Overlay -->
+        <ContentControl Content="{Binding CurrentVideoDetailsOverallViewModel}"
+                        IsVisible="{Binding IsVideoDetailsOverlayActive}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="vmVideoManagement:VideoDetailsViewModel">
+                    <vVideoManagement:VideoDetailsView />
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+        
+        <ContentControl Content="{Binding CurrentVideoLoadingOverlayViewModel}"
+                        IsVisible="{Binding IsVideoLoadingOverlayActive}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="vmVideoManagement:VideosLoadingOverlayViewModel">
+                    <vVideoManagement:VideosLoadingOverlayView />
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+    </Panel>
+
+</UserControl>

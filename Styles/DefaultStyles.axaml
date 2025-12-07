@@ -1,0 +1,24 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" Background="{DynamicResource PrimaryBackgroundGradiant}">
+            <!-- Add Controls for Previewer Here -->
+            <Button HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal">
+                    <Label Classes="icon" Content="&#xe2c2;"></Label> <!-- unicode from phosphor website -->
+                    <Label Content="Home"></Label>
+                </StackPanel>
+            </Button>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+
+    <Style Selector="Window">
+        <Setter Property="FontFamily" Value="{DynamicResource Oswald}"></Setter>
+    </Style>
+    <Style Selector="Label.icon">
+        <Setter Property="FontFamily" Value="{DynamicResource Phosphor-Fill}"></Setter>
+        <Setter Property="Margin" Value="0  6 0 0"></Setter>
+    </Style>
+</Styles>

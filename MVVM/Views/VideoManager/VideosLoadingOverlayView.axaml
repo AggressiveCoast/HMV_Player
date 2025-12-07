@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:HMV_Player.MVVM.ViewModels.VideoManager"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HMV_Player.MVVM.Views.VideoManager.VideosLoadingOverlayView"
+             x:DataType="vm:VideosLoadingOverlayViewModel"
+             xmlns:progRing="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing">
+    <Grid Background="Black" Opacity="70">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="50">
+            <progRing:ProgressRing Width="80" 
+                                   Height="80"
+                                   IsActive="True"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Cyan"
+                                   Margin="10,20,0,0"/>
+            <TextBlock FontSize="30" Foreground="Cyan" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Loading Videos"></TextBlock>
+            <TextBlock FontSize="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding CurrentFileBeingProcessed }"></TextBlock>
+            <ProgressBar Width="500" Height="40" Minimum="0" Maximum="1" Value="{Binding ProgressPercentage}" ShowProgressText="true"></ProgressBar>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

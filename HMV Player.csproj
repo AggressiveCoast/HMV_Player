@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Svg" Version="11.3.0" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="CommunityToolKit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Deadpikle.AvaloniaProgressRing" Version="0.10.10" />
+        <PackageReference Include="Emgu.CV" Version="4.12.0.5764" />
+        <PackageReference Include="Emgu.CV.runtime.windows" Version="4.12.0.5764" />
+        <PackageReference Include="LibVLCSharp" Version="3.9.4" />
+        <PackageReference Include="LibVLCSharp.Avalonia" Version="3.9.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageReference Include="System.IO.Ports" Version="10.0.0" />
+        <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\Images\Icons\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Fonts\Phosphor.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor.ttf" />
+      <None Remove="Assets\Fonts\Phosphor-Fill.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor-Fill.ttf" />
+      <None Remove="Assets\Fonts\Akko Pro Regular.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Akko Pro Regular.ttf" />
+      <None Remove="Assets\Fonts\Oswald-Bold.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Oswald-Bold.ttf" />
+      <None Remove="Assets\Fonts\Oswald-Medium.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Oswald-Medium.ttf" />
+      <None Remove="Assets\Images\Placeholders\getty-brown-bear-56afcf215f9b58b7d01d5195.jpg" />
+      <AvaloniaResource Include="Assets\Images\Placeholders\bear.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="MVVM\Views\MainView.axaml.cs">
+        <DependentUpon>MainView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="MVVM\Views\DevicesView.axaml.cs">
+        <DependentUpon>DevicesView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+</Project>

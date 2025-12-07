@@ -1,0 +1,59 @@
+﻿using System;
+using System.IO;
+using System.Text.Json;
+using HMV_Player.Data;
+
+namespace HMV_Player.Services.Storage;
+
+public abstract class BaseSettingsStorageService<T> where T : class, new() {
+    protected abstract string baseFolderPath { get; } 
+    protected abstract string savePathFileName { get; }
+    
+    public T DataInstance;
+
+    public BaseSettingsStorageService() {
+        DataInstance = Load();
+    }
+
+    protected string BuildFullFolderPath() {
+        return baseFolderPath + "/" + savePathFileName + ".json";
+    }
+
+    protected T Load() {
+        string fullFolderPath = BuildFullFolderPath();
+        if (!File.Exists(fullFolderPath)) {
+            var instance = new T();
+            Save(instance);
+            return instance;
+        }
+
+        try {
+            var json = File.ReadAllText(fullFolderPath);
+            var instance = JsonSerializer.Deserialize<T>(json);
+
+            if (instance == null) {
+                instance = new T();
+                Save(instance);
+            }
+
+            return instance;
+        }
+        catch(Exception e) {
+            var instance = new T();
+            Save(instance);
+            return instance;
+        }
+    }
+    
+    private void Save<T>(T objectToSave)  {
+        string fullFolderPath = BuildFullFolderPath();
+        Directory.CreateDirectory(Path.GetDirectoryName(fullFolderPath)!);
+        File.WriteAllText(fullFolderPath, JsonSerializer.Serialize(objectToSave, new JsonSerializerOptions {
+            WriteIndented = true
+        }));
+    }
+
+    public void Save() {
+        Save(DataInstance);
+    }
+}

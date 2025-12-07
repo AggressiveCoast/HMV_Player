@@ -1,0 +1,40 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="HMV_Player.App"
+             xmlns:local="clr-namespace:HMV_Player"
+             RequestedThemeVariant="Default">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="Styles/DefaultStyles.axaml"></StyleInclude>
+        <StyleInclude Source="Controls/VideoManagement/VidCard.axaml"></StyleInclude>
+        <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml"/>
+    </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <MergeResourceInclude Source="/Controls/IconButton.axaml"></MergeResourceInclude>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <SolidColorBrush x:Key="PrimaryBackground">#34495e</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryForeground">#ecf0f1</SolidColorBrush>
+        <LinearGradientBrush x:Key="PrimaryBackgroundGradiant" StartPoint="0%, 0%" EndPoint="100%, 0%">
+            <GradientStop Offset="0" Color="#34495e"></GradientStop>
+            <GradientStop Offset="1" Color="#2980b9"></GradientStop>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="PrimaryHoverBackground">#95a5a6</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryActiveBackground">#6633dd</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryHoverForeground">#8e44ad</SolidColorBrush>
+
+        <FontFamily x:Key="Phosphor">/Assets/Fonts/Phosphor.ttf#Phosphor</FontFamily>
+        <FontFamily x:Key="Phosphor-Fill">/Assets/Fonts/Phosphor-Fill.ttf#Phosphor-Fill</FontFamily>
+        <FontFamily x:Key="Oswald">/Assets/Fonts/Oswald-Medium.ttf#Oswald Medium</FontFamily>
+        <FontFamily x:Key="Oswald-Bold">/Assets/Fonts/Oswald-Bold.ttf#Oswald</FontFamily>
+    </Application.Resources>
+</Application>

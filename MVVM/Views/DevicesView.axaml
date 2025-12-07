@@ -1,0 +1,37 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:devicePages="clr-namespace:HMV_Player.MVVM.ViewModels"
+             x:Class="HMV_Player.MVVM.Views.DevicesView"
+             x:DataType="devicePages:DevicesViewModel">
+    <Grid RowDefinitions="100, *">
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
+            <Button Content="Lovense" Classes="nav-btn" Classes.active="{Binding IsLovensePageActive}"
+                    Command="{Binding GoToLovensePageCommand}">
+            </Button>
+            <Button Content="Nogasm" Classes="nav-btn" Classes.active="{Binding IsNogasmPageActive}"
+                    Command="{Binding GoToNogasmPageCommand}">
+            </Button>
+        </StackPanel>
+
+        <ContentControl Grid.Row="1" Content="{Binding CurrentDevicesPage}" />
+
+    </Grid>
+    
+    <UserControl.Styles>
+        <Style Selector="Button.nav-btn /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Crimson"/>
+            <Setter Property="Foreground" Value="Aqua"/>
+        </Style>
+        <Style Selector="Button.nav-btn.pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.nav-btn.active /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </UserControl.Styles>
+</UserControl>

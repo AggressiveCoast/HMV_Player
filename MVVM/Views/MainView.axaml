@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:HMV_Player.MVVM.ViewModels"
+        xmlns:views="clr-namespace:HMV_Player.MVVM.Views"
+
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="800" Height="450"
+        x:Class="HMV_Player.MainView"
+        
+        Title="HMV_Player"
+        x:DataType="viewModels:MainViewModel">
+    
+    <Grid Background="{DynamicResource PrimaryBackground}" ColumnDefinitions="200, *">
+        <Border Padding="20" Background="{DynamicResource PrimaryBackgroundGradiant}">
+            <Grid RowDefinitions="*, Auto">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="HMV Player" FontSize="26" FontFamily="{DynamicResource Oswald-Bold}" Foreground="Azure"></TextBlock>
+                    <IconButton Content="Home" IconText="&#xe2c2;" Classes.active="{Binding HomePageIsActive}" Command="{Binding GoToHomeCommand}" HorizontalAlignment="Stretch"></IconButton>
+                    <IconButton Content="Video" IconText="&#xE740;" Classes.active="{Binding PlayVideoPageIsActive}" Command="{Binding GoToPlayVideoCommand}" HorizontalAlignment="Stretch"></IconButton>
+                    <IconButton Content="Video Manager" IconText="&#xEA22;" Classes.active="{Binding VideoManagerIsActive}" Command="{Binding GoToVideoManagerCommand}" HorizontalAlignment="Stretch"></IconButton>
+                    <IconButton Content="Devices" IconText="&#xEA5E;" Classes.active="{Binding DevicesPageIsActive}" Command="{Binding GoToDevicesCommand}" HorizontalAlignment="Stretch"></IconButton>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}"/>
+    </Grid>
+</Window>
