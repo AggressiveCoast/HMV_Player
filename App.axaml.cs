@@ -12,6 +12,7 @@ using HMV_Player.MVVM.ViewModels;
 using HMV_Player.MVVM.ViewModels.Base;
 using HMV_Player.MVVM.ViewModels.Devices;
 using HMV_Player.MVVM.ViewModels.VideoManager;
+using HMV_Player.MVVM.ViewModels.VideoPlayer;
 using HMV_Player.Services;
 using HMV_Player.Services.Devices;
 using HMV_Player.Services.Devices.Lovense;
@@ -41,6 +42,7 @@ public partial class App : Application {
         collection.AddTransient<PlayVideoViewModel>();
         collection.AddTransient<VideoManagerViewModel>();
 
+        collection.AddSingleton<VideoPlayerViewModel>();
 
         initializeServices(collection);
         initializeDevicePages(collection);
@@ -112,6 +114,7 @@ public partial class App : Application {
 
         collection.AddSingleton<ToyScriptProcessorsStorageService>();
         collection.AddSingleton<VideoDataStorageService>();
+        collection.AddSingleton<UserSettingsStorageService>();
 
         collection.AddSingleton<IDialogueService, DialogueService>();
     }

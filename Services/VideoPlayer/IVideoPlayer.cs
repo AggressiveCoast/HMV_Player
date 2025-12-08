@@ -8,6 +8,8 @@ public interface IVideoPlayer {
     public LibVLC Lib { get; }
     public MediaPlayer Player { get; }
 
+    public long CachedPauseTime { get; set; }
+
     public void OnPlaying() {
         OnPlayingAction?.Invoke(Player);
     }
@@ -28,4 +30,6 @@ public interface IVideoPlayer {
         Player.Dispose();
         Lib.Dispose();
     }
+
+    public void LoadMedia(string filePath);
 }

@@ -2,8 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using HMV_Player.Data;
 using HMV_Player.Factories;
+using HMV_Player.MVVM.Models;
 using HMV_Player.MVVM.ViewModels.Base;
 using HMV_Player.MVVM.Views;
+using HMV_Player.Services.VideoPlayer;
+using LibVLCSharp.Shared;
 
 namespace HMV_Player.MVVM.ViewModels;
 
@@ -24,9 +27,11 @@ public partial class MainViewModel : ViewModelBase {
     public bool VideoManagerIsActive => CurrentPage.PageName == ApplicationPageName.VideoManager;
     
     private readonly PageFactory _pageFactory;
+    private readonly IVideoPlayer _videoPlayer;
 
-    public MainViewModel(PageFactory pageFactory) {
+    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer) {
         _pageFactory = pageFactory;
+        _videoPlayer =  videoPlayer;
         GoToHome();
     }
 
@@ -48,5 +53,12 @@ public partial class MainViewModel : ViewModelBase {
     [RelayCommand]
     private void GoToVideoManager() {
         CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageName.VideoManager);
+    }
+
+    public void LoadVideoAndGoToVideoPage(VidCardModel vidCardModel) {
+        _videoPlayer.LoadMedia(vidCardModel.VideoPath);
+        CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageName.PlayVideo);
+        
+        
     }
 }

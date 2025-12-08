@@ -6,33 +6,95 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="HMV_Player.MVVM.Views.VideoManager.VideoDetailsView"
              x:DataType="local:VideoDetailsViewModel">
-    
+
     <UserControl.Styles>
+        <!-- close button -->
         <Style Selector="Button.close-video">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Padding" Value="4"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="White"></Setter>
             <Setter Property="FontSize" Value="30"></Setter>
         </Style>
-        
+
         <Style Selector="Button.close-video:pointerover">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="Button.close-video:pointerover Label">
+            <Setter Property="Foreground" Value="Red" />
         </Style>
         
-        <Style Selector="Button.close-video:pointerover Label">
-            <Setter Property="Foreground" Value="Red"/>
+        <!-- fun script options buttons -->
+        <Style Selector="Button.funscript-channels">
+            <Setter Property="Background" Value="SlateGray" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontSize" Value="30"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+            
+        </Style>
+
+        <Style Selector="Button.funscript-channels:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Gray" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="CadetBlue"></Setter>
+        </Style>
+        
+        <!-- load video button -->
+        <Style Selector="Button.load-video">
+            <Setter Property="Background" Value="SlateGray" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontSize" Value="30"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+        </Style>
+
+        <Style Selector="Button.load-video:pointerover /template/ ContentPresenter" >
+            <Setter Property="Background" Value="DodgerBlue" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="HotPink"></Setter>
         </Style>
     </UserControl.Styles>
-    
-    <Grid Background="Black" Opacity="70">
-        <Button Classes="close-video" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding CloseVideoDetailsCommand}">
-            <Label Classes="icon" Margin="0, -1, 0, 0" Content="&#xE4F8;">
+
+    <Grid>
+        <Border Background="#B3000000"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+        <Grid RowDefinitions="*, *">
+            
+            <Grid Row="0" >
+                <Image Source="{Binding ThumbnailImg }" 
+                       Stretch="Uniform"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch">
+                </Image>
+                <Button Classes="close-video" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Command="{Binding CloseVideoDetailsCommand}">
+                    <Label Classes="icon" Margin="0, -1, 0, 0" Content="&#xE4F8;">
+
+                    </Label>
+                </Button>
+            </Grid>
+            <Grid Row="1">
+                <UniformGrid HorizontalAlignment="Stretch" Columns="1" MaxWidth="400">
+                    <Button Classes="funscript-channels" Content="Funscript Channel 1" Command="{Binding AssignFunscriptToChannel}" CommandParameter="1"></Button>
+                    <Button Classes="funscript-channels" Content="Funscript Channel 2" Command="{Binding AssignFunscriptToChannel}" CommandParameter="2"></Button>
+                    <Button Classes="funscript-channels" Content="Funscript Channel 3" Command="{Binding AssignFunscriptToChannel}" CommandParameter="3"></Button>
+                    <Button Margin="0,20,0,0" Classes="load-video" Content="Load Video" Command="{Binding LoadVideoAndOpenPlayPage}"></Button>
+                </UniformGrid>
                 
-            </Label>
-        </Button>
+            </Grid>
+            
+
+
+        </Grid>
     </Grid>
-    
+
 </UserControl>

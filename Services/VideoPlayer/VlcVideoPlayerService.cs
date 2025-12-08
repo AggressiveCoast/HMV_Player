@@ -8,6 +8,7 @@ public class VlcVideoPlayerService : IVideoPlayer{
     
     public LibVLC Lib { get; }
     public MediaPlayer Player { get; }
+    public long CachedPauseTime { get; set; }
     public Action<MediaPlayer> OnPlayingAction { get; }
     public Action<MediaPlayer> OnPausedAction { get; }
     public Action<MediaPlayer> OnStoppedAction { get; }
@@ -23,5 +24,13 @@ public class VlcVideoPlayerService : IVideoPlayer{
     {
         Player.Dispose();
         Lib.Dispose();
+    }
+
+    public void LoadMedia(string filePath) {
+        var media = new Media(Lib, filePath,
+            FromType.FromPath);
+        Player.Media = media;
+        Player.Time = 0;
+        CachedPauseTime = 0;
     }
 }

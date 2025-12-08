@@ -30,7 +30,7 @@
                                 ClipToBounds="True"
                                 Height="180"
                                 Width="296">
-                            <Image Source="{TemplateBinding ThumbnailUrl}"
+                            <Image Source="{TemplateBinding ThumbnailImage}"
                                    Stretch="UniformToFill" />
                         </Border>
                         <TextBlock Text="{TemplateBinding Title}"

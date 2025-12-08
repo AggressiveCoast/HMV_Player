@@ -15,7 +15,8 @@
     <Panel>
         <Grid RowDefinitions="40, *">
             <StackPanel Grid.Row="0" Background="Gray" Orientation="Horizontal" Spacing="10">
-                <Button Content="Refresh Videos" Command="{Binding RefreshVideos}"></Button>
+                <Button Content="Rebuild Video Registry" Command="{Binding RebuildVideoRegistryCommand}"></Button>
+                <Button Content="Refresh Video Registry" Command="{Binding RefreshVideoRegistryCommand}"></Button>
                 <Button Content="Set Base Directory" Command="{Binding OnSelectBaseDirectoryClicked}"/>
                 <TextBlock VerticalAlignment="Center" Background="Transparent" Foreground="White" Text="{Binding CurrentVideoBaseDirectoryDisplayString }"></TextBlock>
             </StackPanel>
@@ -31,7 +32,7 @@
                         <DataTemplate>
                             <videoManagement:VidCard
                                 Title="{Binding Title}"
-                                ThumbnailUrl="{Binding ImageSrc}"
+                                ThumbnailImage="{Binding ThumbnailImage}"
                                 Command="{Binding #Root.((vm:VideoManagerViewModel)DataContext).OpenVideoDetailsCommand}"
                                 CommandParameter="{Binding}"
                                 Width="320"

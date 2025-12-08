@@ -32,15 +32,7 @@ public class WindowsThumbNailExtractorService : IThumbnailExtractor {
                             return false; // even the first frame failed, that's crazy
                     }
 
-                    int squareSize = Math.Min(frame.Width, frame.Height);
-                    int x = (frame.Width - squareSize) / 2;
-                    int y = (frame.Height - squareSize) / 2;
-                    int desiredSize = 320;
-                    using var image = frame.ToImage<Bgra, byte>()
-                        .GetSubRect(new Rectangle(x, y, squareSize, squareSize))
-                        .Resize(desiredSize, desiredSize, Inter.Area, true);
-                    image.Save(Path.ChangeExtension(outputPath, ".Jpeg"));
-                    //CvInvoke.Imwrite()
+                    lowerImageRes(frame, outputPath);
                 }
 
                 return true;
@@ -49,5 +41,26 @@ public class WindowsThumbNailExtractorService : IThumbnailExtractor {
                 return false;
             }
         });
+    }
+    
+    private void formatToSquareImage(Mat frame, string outputPath) {
+        int squareSize = Math.Min(frame.Width, frame.Height);
+        int x = (frame.Width - squareSize) / 2;
+        int y = (frame.Height - squareSize) / 2;
+        int desiredSize = 320;
+        using var image = frame.ToImage<Bgr, byte>()
+            .GetSubRect(new Rectangle(x, y, squareSize, squareSize))
+            .Resize(desiredSize, desiredSize, Inter.Area, true);
+        image.Save(outputPath);
+    }
+
+    private void lowerImageRes(Mat frame, string outputPath) {
+        float ratio = (float) frame.Width / frame.Height;
+        int desiredSize = 320;
+        int width = desiredSize;
+        int height = (int) (desiredSize / ratio);
+        using var image = frame.ToImage<Bgr, byte>()
+            .Resize(width, height, Inter.Area, true);
+        image.Save(outputPath);
     }
 }

@@ -16,7 +16,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="Cyan"
                                    Margin="10,20,0,0"/>
-            <TextBlock FontSize="30" Foreground="Cyan" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Loading Videos"></TextBlock>
+            <TextBlock FontSize="30" Foreground="Cyan" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Processing Videos"></TextBlock>
             <TextBlock FontSize="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding CurrentFileBeingProcessed }"></TextBlock>
             <ProgressBar Width="500" Height="40" Minimum="0" Maximum="1" Value="{Binding ProgressPercentage}" ShowProgressText="true"></ProgressBar>
         </StackPanel>

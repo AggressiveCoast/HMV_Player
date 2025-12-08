@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
+using Avalonia.Skia.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HMV_Player.Controls.VideoManagement;
@@ -19,34 +21,26 @@ public partial class VideoManagerViewModel : PageViewModel {
 
     private readonly VideoDataStorageService _videoDataStorageService;
     private readonly IDialogueService _dialogueService;
+    private readonly MainViewModel _mainViewModel;
 
-    private Func<VideosLoadingOverlayViewModel> _videoLoadingOverlayViewModelFactory;
+    private Func<VideosLoadingOverlayViewModel.VideoLibraryBuildMode, VideosLoadingOverlayViewModel> _videoLoadingOverlayViewModelFactory;
 
     public VideoManagerViewModel(VideoDataStorageService videoDataStorageService,
-        IThumbnailExtractor thumbNailExtractorService, IDialogueService dialogueService) {
-        _videoLoadingOverlayViewModelFactory = () => {
+        IThumbnailExtractor thumbNailExtractorService, IDialogueService dialogueService, MainViewModel mainViewModel) {
+        _mainViewModel = mainViewModel;
+        _videoLoadingOverlayViewModelFactory = (videoLibraryBuildMode) => {
             OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
             return new VideosLoadingOverlayViewModel(videoDataStorageService, thumbNailExtractorService, () => {
                 CurrentVideoLoadingOverlayViewModel = null;
+                refreshVideoCards();
                 OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
-            });
+            }, videoLibraryBuildMode);
+            
         };
         _dialogueService = dialogueService;
         _videoDataStorageService = videoDataStorageService;
 
-        VidCards.Clear();
-        VidCards.Add(new VidCardModel() {
-            Title = "Some Video 1",
-            ImageSrc = "avares://HMV Player/Assets/Images/Placeholders/bear.jpg"
-        });
-        VidCards.Add(new VidCardModel() {
-            Title = "Some Video 2",
-            ImageSrc = "avares://HMV Player/Assets/Images/Placeholders/bear.jpg"
-        });
-        VidCards.Add(new VidCardModel() {
-            Title = "Some Video 3",
-            ImageSrc = "avares://HMV Player/Assets/Images/Placeholders/bear.jpg"
-        });
+        refreshVideoCards();
     }
 
     public ObservableCollection<VidCardModel> VidCards { get; set; } = new();
@@ -76,7 +70,7 @@ public partial class VideoManagerViewModel : PageViewModel {
     [RelayCommand]
     public void OpenVideoDetails(VidCardModel card) {
         Console.WriteLine($"Opening video: {card.Title}");
-        CurrentVideoDetailsOverallViewModel = new VideoDetailsViewModel(card, CloseVideoDetails);
+        CurrentVideoDetailsOverallViewModel = new VideoDetailsViewModel(card, _mainViewModel, CloseVideoDetails);
         OnPropertyChanged(nameof(IsVideoDetailsOverlayActive));
     }
 
@@ -98,8 +92,34 @@ public partial class VideoManagerViewModel : PageViewModel {
     }
 
     [RelayCommand]
-    public void RefreshVideos() {
-        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke();
+    public void RebuildVideoRegistry() {
+        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke(VideosLoadingOverlayViewModel.VideoLibraryBuildMode.FullRebuild);
         OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
+    }
+
+    [RelayCommand]
+    public void RefreshVideoRegistry() {
+        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke(VideosLoadingOverlayViewModel.VideoLibraryBuildMode.OnlyMissingFiles);
+        OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
+    }
+
+    private void refreshVideoCards() {
+        VidCards.Clear();
+        
+        foreach (var dataInstanceVideoFileData in _videoDataStorageService.DataInstance.VideoFileDatas) {
+            string thumbNailPath = dataInstanceVideoFileData.ThumbnailPath;
+            Bitmap thumbnail = null;
+            try {
+                thumbnail = new Bitmap(@thumbNailPath);
+            }
+            catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+            VidCards.Add(new VidCardModel() {
+                Title =  dataInstanceVideoFileData.Name,
+                ThumbnailImage = thumbnail,
+                VideoPath = dataInstanceVideoFileData.FullPath
+            });
+        }
     }
 }

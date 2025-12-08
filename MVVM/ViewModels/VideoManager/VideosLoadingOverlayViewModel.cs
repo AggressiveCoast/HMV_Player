@@ -23,20 +23,22 @@ public partial class VideosLoadingOverlayViewModel : ViewModelBase {
     [ObservableProperty] private float _progressPercentage;
 
     public VideosLoadingOverlayViewModel(VideoDataStorageService videoDataStorageService,
-        IThumbnailExtractor thumbNailExtractorService, Action onVideosLoaded) {
-        Task.Run(() => LoadVideos(onVideosLoaded));
+        IThumbnailExtractor thumbNailExtractorService, Action onVideosLoaded, VideoLibraryBuildMode  videoLibraryBuildMode) {
         _thumbNailExtractorService = thumbNailExtractorService;
         _videoDataStorageService = videoDataStorageService;
+        Task.Run(() => LoadVideos(onVideosLoaded, videoLibraryBuildMode));
     }
 
-    private async Task LoadVideos(Action onVideosLoaded) {
+    private async Task LoadVideos(Action onVideosLoaded, VideoLibraryBuildMode videoLibraryBuildMode) {
         if (string.IsNullOrWhiteSpace(_videoDataStorageService.DataInstance.BaseLocation)) {
             onVideosLoaded?.Invoke();
             return;
         }
         
         _thumbNailExtractorService.ClearThumbnailCache();
-        _videoDataStorageService.DataInstance.VideoFileDatas.Clear();
+        if (videoLibraryBuildMode == VideoLibraryBuildMode.FullRebuild) {
+            _videoDataStorageService.DataInstance.VideoFileDatas.Clear();
+        }
         
         string baseVideoPath = _videoDataStorageService.DataInstance.BaseLocation;
 
@@ -51,8 +53,12 @@ public partial class VideosLoadingOverlayViewModel : ViewModelBase {
 
         float fileCount = 0;
         foreach (var videoPath in allFiles) {
+            if (videoLibraryBuildMode == VideoLibraryBuildMode.OnlyMissingFiles &&
+                _videoDataStorageService.DataInstance.VideoFileDatas.Any((file) => file.FullPath == videoPath))
+                continue;
             fileCount++;
             string writePath = Path.Combine(HMVPlayerAppPaths.ThumbNailCache, Path.GetFileNameWithoutExtension(videoPath));
+            writePath = Path.ChangeExtension(writePath, ".Jpeg");
             CurrentFileBeingProcessed = writePath;
             var successfulWrite = await _thumbNailExtractorService.ExtractThumbnailAsync(videoPath, writePath);
             if (successfulWrite) {
@@ -67,5 +73,10 @@ public partial class VideosLoadingOverlayViewModel : ViewModelBase {
 
         _videoDataStorageService.Save();
         onVideosLoaded?.Invoke();
+    }
+
+    public enum VideoLibraryBuildMode {
+        FullRebuild,
+        OnlyMissingFiles
     }
 }

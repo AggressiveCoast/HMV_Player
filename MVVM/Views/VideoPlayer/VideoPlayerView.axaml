@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
+             xmlns:videoPlayer="clr-namespace:HMV_Player.MVVM.ViewModels.VideoPlayer"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HMV_Player.MVVM.Views.VideoPlayer.VideoPlayerView"
+             x:DataType="videoPlayer:VideoPlayerViewModel">
+    <Grid RowDefinitions="*, 40">
+        <Grid Grid.Row="0">
+            <vlc:VideoView x:Name="VideoViewElement"></vlc:VideoView>
+        </Grid>
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,60,*,Auto, 60" VerticalAlignment="Center">
+
+            <!-- Button -->
+            <Button Grid.Column="0" CornerRadius="10" Command="{Binding PauseToggleVideo}">
+                <Panel>
+                    <Label Classes="icon" Margin="0,-1,0,0" Content="&#xE39E;" IsVisible="{Binding !IsPaused}" />
+                    <Label Classes="icon" Margin="0,-1,0,0" Content="&#xE3D0;" IsVisible="{Binding IsPaused}" />
+                </Panel>
+            </Button>
+
+            <!-- Timestamp -->
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       Text="{Binding SliderTimeText}" />
+
+            <!-- Horizontal slider (fills all remaining space) -->
+            <Slider Grid.Column="2"
+                    x:Name="TimeSlider"
+                    Value="{Binding SliderTimeValue}"
+                    Minimum="0" Maximum="1"
+                    Margin="5,-4,5,0"
+                    VerticalAlignment="Center" />
+
+            <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label FontSize="30" Classes="icon" Margin="0,-1,0,0" Content="&#xE45C;" IsVisible="{Binding IsVolumeZero}" />
+                <Label FontSize="30" Classes="icon" Margin="0,-1,0,0" Content="&#xE44C;" IsVisible="{Binding IsVolume55}" />
+                <Label FontSize="30" Classes="icon" Margin="0,-1,0,0" Content="&#xE44A;" IsVisible="{Binding IsVolume100}" />
+            </Grid>
+            <!-- Vertical slider -->
+            <Slider x:Name="VolumeSlider" Grid.Column="4"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Margin="5,-4,5,0"
+                    Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}" />
+        </Grid>
+    </Grid>
+</UserControl>
