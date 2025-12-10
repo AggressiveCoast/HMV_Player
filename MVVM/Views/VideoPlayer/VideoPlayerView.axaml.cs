@@ -22,6 +22,7 @@ public partial class VideoPlayerView : UserControl {
                 }
                 vm.CachedPauseTime = vm.Player.Time;
                 vm.SaveVolume();
+                vm.SetVideoPlayerState(VideoPlayerViewModel.VideoPlayerState.Paused);
             }
         };
 

@@ -20,14 +20,16 @@ public partial class VideoPlayerViewModel : ViewModelBase {
     public float SliderTimeValue { get; set; }
 
     public Action<MediaPlayer> OnMediaLoaded { get; set; }
-    public Action<MediaPlayer> OnPausedAction;
-    public Action<MediaPlayer> OnResumeAction;
+    public Action<MediaPlayer> OnPausedAction { get; set; }
+    public Action<MediaPlayer> OnResumeAction { get; set; }
 
     private bool _wasVideoPlayingBeforeSeeking;
 
     private bool _isSeeking;
 
     private int _volume;
+    
+    private VideoPlayerState _state = VideoPlayerState.None;
 
     public int Volume {
         get => _volume;
@@ -59,9 +61,6 @@ public partial class VideoPlayerViewModel : ViewModelBase {
         Volume = _userSettingsStorageService.DataInstance.DefaultVolume;
         Player.Playing += PlayerOnPlaying;
         Player.Paused += PlayerOnPaused;
-        _videoPlayer.OnMediaLoaded += player => {
-            OnMediaLoaded?.Invoke(player);
-        };
 
         Player.SetPause(true);
         SliderTimeText = "00:00:00";
@@ -86,14 +85,10 @@ public partial class VideoPlayerViewModel : ViewModelBase {
 
     [RelayCommand]
     public void PauseToggleVideo() {
+        if (_state == VideoPlayerState.None) return;
         Player.Pause();
         IsPaused = !IsPaused;
-        if (IsPaused) {
-            OnResumeAction?.Invoke(Player);
-        }
-        else {
-            OnPausedAction?.Invoke(Player);
-        }
+        SetVideoPlayerState(IsPaused ? VideoPlayerState.Paused : VideoPlayerState.Playing);
         OnPropertyChanged(nameof(IsPaused));
     }
 
@@ -127,5 +122,28 @@ public partial class VideoPlayerViewModel : ViewModelBase {
 
     public void SaveVolume() {
         _userSettingsStorageService.Save();
+    }
+
+    public void SetVideoPlayerState(VideoPlayerState newState) {
+        _state = newState;
+        switch (_state) {
+            case VideoPlayerState.MediaLoaded:
+                OnMediaLoaded?.Invoke(Player);
+                break;
+            case VideoPlayerState.Playing:
+                OnResumeAction?.Invoke(Player);
+                break;
+            case VideoPlayerState.Paused:
+                OnPausedAction?.Invoke(Player);
+                break;
+        }
+    }
+    
+
+    public enum VideoPlayerState {
+        None,
+        MediaLoaded,
+        Paused,
+        Playing
     }
 }

@@ -10,8 +10,6 @@ public interface IVideoPlayer {
 
     public long CachedPauseTime { get; set; }
     
-    public Action<MediaPlayer> OnMediaLoaded { get; set; }
-
     public void Dispose() {
         Player.Dispose();
         Lib.Dispose();

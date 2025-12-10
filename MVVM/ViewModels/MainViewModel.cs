@@ -4,6 +4,7 @@ using HMV_Player.Data;
 using HMV_Player.Factories;
 using HMV_Player.MVVM.Models;
 using HMV_Player.MVVM.ViewModels.Base;
+using HMV_Player.MVVM.ViewModels.VideoPlayer;
 using HMV_Player.MVVM.Views;
 using HMV_Player.Services.Devices;
 using HMV_Player.Services.VideoPlayer;
@@ -30,13 +31,14 @@ public partial class MainViewModel : ViewModelBase {
     private readonly PageFactory _pageFactory;
     private readonly IVideoPlayer _videoPlayer;
     private readonly NotificationContainerViewModel _notificationContainerViewModel;
-    
+    private readonly VideoPlayerViewModel _videoPlayerViewModel;
     public NotificationContainerViewModel NotificationContainerViewModel => _notificationContainerViewModel;
 
-    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer, ToyScriptPlayerService _toyScriptPlayerService, NotificationContainerViewModel notificationContainerViewModel) {
+    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer,NotificationContainerViewModel notificationContainerViewModel, VideoPlayerViewModel  videoPlayerViewModel) {
         _notificationContainerViewModel = notificationContainerViewModel;
         _pageFactory = pageFactory;
         _videoPlayer =  videoPlayer;
+        _videoPlayerViewModel = videoPlayerViewModel;
         GoToHome();
     }
 
@@ -62,6 +64,7 @@ public partial class MainViewModel : ViewModelBase {
 
     public void LoadVideoAndGoToVideoPage(VidCardModel vidCardModel) {
         _videoPlayer.LoadMedia(vidCardModel.VideoPath);
+        _videoPlayerViewModel.SetVideoPlayerState(VideoPlayerViewModel.VideoPlayerState.MediaLoaded);
         CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageName.PlayVideo);
         
         

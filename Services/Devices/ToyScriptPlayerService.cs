@@ -12,11 +12,9 @@ public class ToyScriptPlayerService {
             PrimeProcessesing();
         };
         videoPlayerViewModel.OnPausedAction += player => {
-            if (!player.IsPlaying) return;
             PauseProcessing();
         };
         videoPlayerViewModel.OnResumeAction += player => {
-            if (!player.IsPlaying) return;
             ResumeProcessing(player.Time);
         };
     }
