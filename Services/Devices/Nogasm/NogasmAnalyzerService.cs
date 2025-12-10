@@ -44,7 +44,8 @@ public class NogasmAnalyzerService {
         try {
             bool trackingValid = await ValidatePortAsync(portString);
             if (!trackingValid) {
-                _notificationContainerViewModel.ShowNotification("Failed to Start Tracking Nogasm", "Message", NotificationType.Info);
+                _notificationContainerViewModel.ShowNotification("Failed to Start Tracking Nogasm", $"Due to Invalid Port: {portString}", NotificationType.Info);
+                return;
             }
             port = new SerialPort(portString, 115200);
             port.DataReceived += OnPortDataReceived;
@@ -52,7 +53,8 @@ public class NogasmAnalyzerService {
         }
         catch (Exception e) {
             StopTrackingPort();
-            _notificationContainerViewModel.ShowNotification("Failed to Start Tracking Nogasm", "Message", NotificationType.Info);
+            ErrorLogger.Log(e);
+            _notificationContainerViewModel.ShowNotification("Failed to Start Tracking Nogasm", e.Message, NotificationType.Error);
         }
     }
 

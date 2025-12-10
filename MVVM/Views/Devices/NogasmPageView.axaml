@@ -31,7 +31,7 @@
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
                                 VerticalAlignment="Center" Spacing="5">
-                        <TextBlock Text="Other Device Pause Threshold:" VerticalAlignment="Center"
+                        <TextBlock Text="Device Interception Threshold:" VerticalAlignment="Center"
                                    ToolTip.Tip="Once the pressure goes above this value devices registered under the respective channels will be stopped.">
                         </TextBlock>
                         <TextBox x:Name="PressureThresholdTextBox" VerticalAlignment="Center" Text="{Binding NogasmPressureThreshold}"></TextBox>

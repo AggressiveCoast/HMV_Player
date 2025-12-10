@@ -16,12 +16,6 @@ public class NotificationBubble : TemplatedControl {
         AvaloniaProperty.Register<NotificationBubble, NotificationType>(nameof(NotificationType),
             NotificationType.Info);
 
-    public static readonly StyledProperty<ICommand?> CloseCommandProperty =
-        AvaloniaProperty.Register<NotificationBubble, ICommand?>(nameof(CloseCommand));
-
-    public static readonly StyledProperty<object?> CloseCommandParameterProperty =
-        AvaloniaProperty.Register<NotificationBubble, object?>(nameof(CloseCommandParameter));
-
     public string Title {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
@@ -35,29 +29,6 @@ public class NotificationBubble : TemplatedControl {
     public NotificationType NotificationType {
         get => GetValue(NotificationTypeProperty);
         set => SetValue(NotificationTypeProperty, value);
-    }
-
-    public ICommand? CloseCommand {
-        get => GetValue(CloseCommandProperty);
-        set => SetValue(CloseCommandProperty, value);
-    }
-
-    public object? CloseCommandParameter {
-        get => GetValue(CloseCommandParameterProperty);
-        set => SetValue(CloseCommandParameterProperty, value);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
-        base.OnApplyTemplate(e);
-
-        var closeButton = e.NameScope.Find<Button>("PART_CloseButton");
-        if (closeButton != null) {
-            closeButton.Click += (s, args) => {
-                if (CloseCommand?.CanExecute(CloseCommandParameter) == true) {
-                    CloseCommand.Execute(CloseCommandParameter);
-                }
-            };
-        }
     }
 }
 

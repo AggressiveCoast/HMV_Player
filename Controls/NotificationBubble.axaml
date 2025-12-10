@@ -39,23 +39,6 @@
                                        Foreground="#CCCCCC"
                                        TextWrapping="Wrap" />
                         </StackPanel>
-
-                        <!-- Close Button -->
-                        <Button Grid.Column="2"
-                                Name="PART_CloseButton"
-                                Content="✕"
-                                FontSize="16"
-                                Background="Transparent"
-                                Foreground="#AAAAAA"
-                                Padding="8,4"
-                                VerticalAlignment="Top"
-                                Cursor="Hand">
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover">
-                                    <Setter Property="Foreground" Value="White" />
-                                </Style>
-                            </Button.Styles>
-                        </Button>
                     </Grid>
                 </Border>
             </ControlTemplate>

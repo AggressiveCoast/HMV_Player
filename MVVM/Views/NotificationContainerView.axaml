@@ -5,34 +5,17 @@
              x:Class="HMV_Player.MVVM.Views.NotificationContainerView"
              x:DataType="vm:NotificationContainerViewModel">
     
-    <Grid>
-        <!-- Notification ItemsControl -->
-        <ItemsControl ItemsSource="{Binding Notifications}"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left"
-                      Margin="20"
-                      IsHitTestVisible="False">
-            <ItemsControl.Styles>
-                <Style Selector="ItemsControl > ContentPresenter">
-                    <Setter Property="IsHitTestVisible" Value="True"/>
-                </Style>
-            </ItemsControl.Styles>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Spacing="0"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <controls:NotificationBubble 
-                        Title="{Binding Title}"
-                        Message="{Binding Message}"
-                        NotificationType="{Binding Type}"
-                        CloseCommand="{Binding $parent[ItemsControl].((vm:NotificationContainerViewModel)DataContext).RemoveNotificationCommand}"
-                        CloseCommandParameter="{Binding}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Grid>
+    <Panel>
+        <Popup IsOpen="True"
+               PlacementMode="AnchorAndGravity"
+               PlacementAnchor="TopRight"
+               PlacementGravity="BottomLeft"
+               PlacementTarget="{Binding $parent[Panel]}"
+               IsLightDismissEnabled="False"
+               HorizontalOffset="-20"
+               VerticalOffset="20">
+            <controls:NotificationPopup DataContext="{Binding}" />
+        </Popup>
+    </Panel>
     
 </UserControl>
