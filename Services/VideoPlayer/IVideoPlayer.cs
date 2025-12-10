@@ -9,22 +9,8 @@ public interface IVideoPlayer {
     public MediaPlayer Player { get; }
 
     public long CachedPauseTime { get; set; }
-
-    public void OnPlaying() {
-        OnPlayingAction?.Invoke(Player);
-    }
-
-    public void OnPaused() {
-        OnPausedAction?.Invoke(Player);
-    }
-
-    public void OnStopped() {
-        OnStoppedAction?.Invoke(Player);
-    }
-
-    public Action<MediaPlayer> OnPlayingAction { get; }
-    public Action<MediaPlayer> OnPausedAction { get; }
-    public Action<MediaPlayer> OnStoppedAction { get; }
+    
+    public Action<MediaPlayer> OnMediaLoaded { get; set; }
 
     public void Dispose() {
         Player.Dispose();

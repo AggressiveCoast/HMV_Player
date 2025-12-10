@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
@@ -70,7 +71,7 @@ public partial class VideoManagerViewModel : PageViewModel {
     [RelayCommand]
     public void OpenVideoDetails(VidCardModel card) {
         Console.WriteLine($"Opening video: {card.Title}");
-        CurrentVideoDetailsOverallViewModel = new VideoDetailsViewModel(card, _mainViewModel, CloseVideoDetails);
+        CurrentVideoDetailsOverallViewModel = new VideoDetailsViewModel(_dialogueService, _videoDataStorageService, card, _mainViewModel, CloseVideoDetails);
         OnPropertyChanged(nameof(IsVideoDetailsOverlayActive));
     }
 
@@ -104,8 +105,7 @@ public partial class VideoManagerViewModel : PageViewModel {
     }
 
     private void refreshVideoCards() {
-        VidCards.Clear();
-        
+        ObservableCollection<VidCardModel> vidCards = new();
         foreach (var dataInstanceVideoFileData in _videoDataStorageService.DataInstance.VideoFileDatas) {
             string thumbNailPath = dataInstanceVideoFileData.ThumbnailPath;
             Bitmap thumbnail = null;
@@ -115,11 +115,13 @@ public partial class VideoManagerViewModel : PageViewModel {
             catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
-            VidCards.Add(new VidCardModel() {
+            vidCards.Add(new VidCardModel() { // add to temp collection to avoid modified collection exception on actual ui collection
                 Title =  dataInstanceVideoFileData.Name,
                 ThumbnailImage = thumbnail,
                 VideoPath = dataInstanceVideoFileData.FullPath
             });
         }
+
+        VidCards = vidCards;
     }
 }

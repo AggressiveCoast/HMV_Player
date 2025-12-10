@@ -7,7 +7,7 @@
              x:Class="HMV_Player.MVVM.Views.PlayVideoView"
              x:DataType="vm:PlayVideoViewModel">
     <Grid>
-        <ContentControl Content="{Binding CurrentPageViewModel}"></ContentControl>
+        <ContentControl Content="{Binding VideoPlayerViewModel}"></ContentControl>
     </Grid>
 
 </UserControl>

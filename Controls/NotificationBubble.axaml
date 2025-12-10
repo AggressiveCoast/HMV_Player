@@ -1,0 +1,105 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="clr-namespace:HMV_Player.Controls">
+    <Style Selector="control|NotificationBubble">
+        <Setter Property="MinWidth" Value="300" />
+        <Setter Property="MaxWidth" Value="400" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16,12"
+                        BoxShadow="0 4 12 0 #40000000">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <!-- Icon -->
+                        <TextBlock Grid.Column="0"
+                                   Name="PART_Icon"
+                                   FontSize="20"
+                                   Margin="0,0,12,0"
+                                   VerticalAlignment="Top" />
+
+                        <!-- Content -->
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="{TemplateBinding Title}"
+                                       FontWeight="SemiBold"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="{TemplateBinding Message}"
+                                       FontSize="13"
+                                       Foreground="#CCCCCC"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!-- Close Button -->
+                        <Button Grid.Column="2"
+                                Name="PART_CloseButton"
+                                Content="✕"
+                                FontSize="16"
+                                Background="Transparent"
+                                Foreground="#AAAAAA"
+                                Padding="8,4"
+                                VerticalAlignment="Top"
+                                Cursor="Hand">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover">
+                                    <Setter Property="Foreground" Value="White" />
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Info Style (Default) -->
+    <Style Selector="control|NotificationBubble">
+        <Setter Property="Background" Value="#DD2C5F9E" />
+        <Setter Property="BorderBrush" Value="#3B82F6" />
+    </Style>
+    <Style Selector="control|NotificationBubble /template/ TextBlock#PART_Icon">
+        <Setter Property="Text" Value="ℹ" />
+        <Setter Property="Foreground" Value="#60A5FA" />
+    </Style>
+
+    <!-- Success Style -->
+    <Style Selector="control|NotificationBubble[NotificationType=Success]">
+        <Setter Property="Background" Value="#DD166534" />
+        <Setter Property="BorderBrush" Value="#10B981" />
+    </Style>
+    <Style Selector="control|NotificationBubble[NotificationType=Success] /template/ TextBlock#PART_Icon">
+        <Setter Property="Text" Value="✓" />
+        <Setter Property="Foreground" Value="#34D399" />
+    </Style>
+
+    <!-- Warning Style -->
+    <Style Selector="control|NotificationBubble[NotificationType=Warning]">
+        <Setter Property="Background" Value="#DD713F12" />
+        <Setter Property="BorderBrush" Value="#F59E0B" />
+    </Style>
+    <Style Selector="control|NotificationBubble[NotificationType=Warning] /template/ TextBlock#PART_Icon">
+        <Setter Property="Text" Value="⚠" />
+        <Setter Property="Foreground" Value="#FBBF24" />
+    </Style>
+
+    <!-- Error Style -->
+    <Style Selector="control|NotificationBubble[NotificationType=Error]">
+        <Setter Property="Background" Value="#DD7F1D1D" />
+        <Setter Property="BorderBrush" Value="#EF4444" />
+    </Style>
+    <Style Selector="control|NotificationBubble[NotificationType=Error] /template/ TextBlock#PART_Icon">
+        <Setter Property="Text" Value="✕" />
+        <Setter Property="Foreground" Value="#F87171" />
+    </Style>
+
+</Styles>

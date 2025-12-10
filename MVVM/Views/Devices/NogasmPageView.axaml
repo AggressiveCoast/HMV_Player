@@ -2,7 +2,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:HMV_Player.MVVM.ViewModels.Devices"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="HMV_Player.MVVM.Views.Devices.NogasmPageView">
-    Nogasm
+             x:Class="HMV_Player.MVVM.Views.Devices.NogasmPageView"
+             x:DataType="vm:NogasmPageViewModel">
+
+    <Panel Background="Gray">
+        <Grid ColumnDefinitions="*, *">
+            <StackPanel Grid.Column="0" VerticalAlignment="Stretch" Spacing="10" Margin="5, 10, 0, 0">
+                <TextBlock FontSize="20" Text="Settings" />
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   Text="Nogasm Port: "
+                                   ToolTip.Tip="Ports are assigned differently on each PC. Test them one by one until you find the right one.">
+                        </TextBlock>
+                        <ComboBox x:Name="PortComboBox" ItemsSource="{Binding AvailablePorts}"
+                                  HorizontalAlignment="Left"
+                                  SelectedValue="{Binding SelectedPort}"
+                                  SelectionChanged="PortComboBox_OnSelectionChanged">
+                        </ComboBox>
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <TextBlock Text="Port Not Valid" Foreground="DarkRed" IsVisible="{Binding !IsPortValid}"></TextBlock>
+                            <TextBlock Text="Nogasm Port Valid" Foreground="ForestGreen"
+                                       IsVisible="{Binding IsPortValid}">
+                            </TextBlock>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
+                                VerticalAlignment="Center" Spacing="5">
+                        <TextBlock Text="Other Device Pause Threshold:" VerticalAlignment="Center"
+                                   ToolTip.Tip="Once the pressure goes above this value devices registered under the respective channels will be stopped.">
+                        </TextBlock>
+                        <TextBox x:Name="PressureThresholdTextBox" VerticalAlignment="Center" Text="{Binding NogasmPressureThreshold}"></TextBox>
+                    </StackPanel>
+                    <ToggleSwitch OnContent="Intercept Channel 1" OffContent="Intercept Channel 1" IsChecked="{Binding IsInterceptChannel1On}"></ToggleSwitch>
+                    <ToggleSwitch OnContent="Intercept Channel 2" OffContent="Intercept Channel 2" IsChecked="{Binding IsInterceptChannel2On}"></ToggleSwitch>
+                    <ToggleSwitch OnContent="Intercept Channel 3" OffContent="Intercept Channel 3" IsChecked="{Binding IsInterceptChannel3On}"></ToggleSwitch>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock FontSize="20" Text="Testing" />
+
+                <TextBlock Margin="0, 10, 0, 0" Text="{Binding CurrentNogasmReading}"></TextBlock>
+            </StackPanel>
+
+        </Grid>
+
+
+    </Panel>
 </UserControl>

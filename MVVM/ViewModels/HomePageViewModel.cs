@@ -7,7 +7,4 @@ namespace HMV_Player.MVVM.ViewModels;
 public partial class HomePageViewModel : PageViewModel {
     public override ApplicationPageName PageName => ApplicationPageName.Home;
     
-    public HomePageViewModel(NogasmAnalyzerService nog) {
-        
-    }
 }

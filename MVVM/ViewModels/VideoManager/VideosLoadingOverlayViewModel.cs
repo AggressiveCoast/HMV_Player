@@ -35,9 +35,9 @@ public partial class VideosLoadingOverlayViewModel : ViewModelBase {
             return;
         }
         
-        _thumbNailExtractorService.ClearThumbnailCache();
         if (videoLibraryBuildMode == VideoLibraryBuildMode.FullRebuild) {
             _videoDataStorageService.DataInstance.VideoFileDatas.Clear();
+            _thumbNailExtractorService.ClearThumbnailCache();
         }
         
         string baseVideoPath = _videoDataStorageService.DataInstance.BaseLocation;

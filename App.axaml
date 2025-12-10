@@ -11,8 +11,9 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="Styles/DefaultStyles.axaml"></StyleInclude>
-        <StyleInclude Source="Controls/VideoManagement/VidCard.axaml"></StyleInclude>
+        <StyleInclude Source="Controls/VideoManager/VidCard.axaml"></StyleInclude>
         <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml"/>
+        <StyleInclude Source="/Controls/NotificationBubble.axaml"/>
     </Application.Styles>
 
     <Application.Resources>

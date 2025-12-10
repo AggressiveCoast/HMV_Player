@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:HMV_Player.MVVM.ViewModels.VideoManager"
+             xmlns:videoManager="clr-namespace:HMV_Player.Controls.VideoManager"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="HMV_Player.MVVM.Views.VideoManager.VideoDetailsView"
              x:DataType="local:VideoDetailsViewModel">
@@ -83,12 +84,22 @@
                 </Button>
             </Grid>
             <Grid Row="1">
-                <UniformGrid HorizontalAlignment="Stretch" Columns="1" MaxWidth="400">
-                    <Button Classes="funscript-channels" Content="Funscript Channel 1" Command="{Binding AssignFunscriptToChannel}" CommandParameter="1"></Button>
-                    <Button Classes="funscript-channels" Content="Funscript Channel 2" Command="{Binding AssignFunscriptToChannel}" CommandParameter="2"></Button>
-                    <Button Classes="funscript-channels" Content="Funscript Channel 3" Command="{Binding AssignFunscriptToChannel}" CommandParameter="3"></Button>
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" MaxWidth="400" MaxHeight="300">
+                    <videoManager:ScriptChannelLoaderCard ChannelIndex="1" 
+                                                          FileLoadCommand="{Binding AssignFunscriptToChannelCommand}" 
+                                                          ClearFileCommand="{Binding ClearFileCommand}"
+                                                          FilePath="{Binding FileLocation1}"/>
+                    <videoManager:ScriptChannelLoaderCard ChannelIndex="2" 
+                                                          FileLoadCommand="{Binding AssignFunscriptToChannelCommand}" 
+                                                          ClearFileCommand="{Binding ClearFileCommand}"
+                                                          FilePath="{Binding FileLocation2}"/>
+                    <videoManager:ScriptChannelLoaderCard ChannelIndex="3" 
+                                                          FileLoadCommand="{Binding AssignFunscriptToChannelCommand}" 
+                                                          ClearFileCommand="{Binding  ClearFileCommand}"
+                                                          FilePath="{Binding FileLocation3}"/>
+
                     <Button Margin="0,20,0,0" Classes="load-video" Content="Load Video" Command="{Binding LoadVideoAndOpenPlayPage}"></Button>
-                </UniformGrid>
+                </StackPanel>
                 
             </Grid>
             

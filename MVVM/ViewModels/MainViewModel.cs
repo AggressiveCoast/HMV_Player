@@ -5,6 +5,7 @@ using HMV_Player.Factories;
 using HMV_Player.MVVM.Models;
 using HMV_Player.MVVM.ViewModels.Base;
 using HMV_Player.MVVM.Views;
+using HMV_Player.Services.Devices;
 using HMV_Player.Services.VideoPlayer;
 using LibVLCSharp.Shared;
 
@@ -28,8 +29,12 @@ public partial class MainViewModel : ViewModelBase {
     
     private readonly PageFactory _pageFactory;
     private readonly IVideoPlayer _videoPlayer;
+    private readonly NotificationContainerViewModel _notificationContainerViewModel;
+    
+    public NotificationContainerViewModel NotificationContainerViewModel => _notificationContainerViewModel;
 
-    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer) {
+    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer, ToyScriptPlayerService _toyScriptPlayerService, NotificationContainerViewModel notificationContainerViewModel) {
+        _notificationContainerViewModel = notificationContainerViewModel;
         _pageFactory = pageFactory;
         _videoPlayer =  videoPlayer;
         GoToHome();

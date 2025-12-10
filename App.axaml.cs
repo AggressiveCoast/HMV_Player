@@ -18,6 +18,7 @@ using HMV_Player.Services.Devices;
 using HMV_Player.Services.Devices.Lovense;
 using HMV_Player.Services.Devices.Lovense.API;
 using HMV_Player.Services.DialogueWindow;
+using HMV_Player.Services.Funscript;
 using HMV_Player.Services.Storage;
 using HMV_Player.Services.VideoLibrary;
 using HMV_Player.Services.VideoPlayer;
@@ -41,8 +42,11 @@ public partial class App : Application {
         collection.AddTransient<DevicesViewModel>();
         collection.AddTransient<PlayVideoViewModel>();
         collection.AddTransient<VideoManagerViewModel>();
+        collection.AddSingleton<ToyScriptPlayerService>();
 
         collection.AddSingleton<VideoPlayerViewModel>();
+
+        collection.AddSingleton<NotificationContainerViewModel>();
 
         initializeServices(collection);
         initializeDevicePages(collection);
@@ -69,7 +73,7 @@ public partial class App : Application {
         var provider = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            desktop.MainWindow = new MainView() {
+            desktop.MainWindow = new MVVM.Views.MainView(provider.GetRequiredService<UserSettingsStorageService>()) {
                 DataContext = provider.GetRequiredService<MainViewModel>()
             };
         }
@@ -106,8 +110,12 @@ public partial class App : Application {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
             collection.AddSingleton<IThumbnailExtractor, WindowsThumbNailExtractorService>();
         }
+        else {
+            throw new PlatformNotSupportedException(RuntimeInformation.OSDescription);
+        }
+        
 
-        collection.AddSingleton<NogasmAnalyzerService>();
+        collection.AddTransient<NogasmAnalyzerService>();
         collection.AddSingleton<ILovenseApiService, LovenseApiService>();
 
         collection.AddSingleton<IVideoPlayer, VlcVideoPlayerService>();
@@ -115,7 +123,12 @@ public partial class App : Application {
         collection.AddSingleton<ToyScriptProcessorsStorageService>();
         collection.AddSingleton<VideoDataStorageService>();
         collection.AddSingleton<UserSettingsStorageService>();
+        collection.AddSingleton<EdgeToyInterceptorStorageService>();
 
         collection.AddSingleton<IDialogueService, DialogueService>();
+
+        collection.AddSingleton<FunscriptPlayerService>();
+
+        collection.AddSingleton<EdgeToyInterceptorService>();
     }
 }

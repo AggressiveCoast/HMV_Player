@@ -57,5 +57,8 @@
         <DependentUpon>DevicesView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Controls\VideoManagement\ScriptChannelFileLoader.axaml">
+        <DependentUpon>ScriptChannelFileLoader.axaml.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

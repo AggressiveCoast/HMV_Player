@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:HMV_Player.Controls"
+             xmlns:vm="using:HMV_Player.MVVM.ViewModels"
+             x:Class="HMV_Player.MVVM.Views.NotificationContainerView"
+             x:DataType="vm:NotificationContainerViewModel">
+    
+    <Grid>
+        <!-- Notification ItemsControl -->
+        <ItemsControl ItemsSource="{Binding Notifications}"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
+                      Margin="20"
+                      IsHitTestVisible="False">
+            <ItemsControl.Styles>
+                <Style Selector="ItemsControl > ContentPresenter">
+                    <Setter Property="IsHitTestVisible" Value="True"/>
+                </Style>
+            </ItemsControl.Styles>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="0"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <controls:NotificationBubble 
+                        Title="{Binding Title}"
+                        Message="{Binding Message}"
+                        NotificationType="{Binding Type}"
+                        CloseCommand="{Binding $parent[ItemsControl].((vm:NotificationContainerViewModel)DataContext).RemoveNotificationCommand}"
+                        CloseCommandParameter="{Binding}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+    
+</UserControl>
