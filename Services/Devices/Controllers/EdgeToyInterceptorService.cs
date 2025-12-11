@@ -1,6 +1,7 @@
 using System;
 using HMV_Player.Services.Funscript;
 using HMV_Player.Services.Storage;
+using HMV_Player.Services.Storage.Devices;
 
 namespace HMV_Player.Services.Devices;
 
@@ -14,8 +15,11 @@ public class EdgeToyInterceptorService {
     }
 
     public void StartInterceptorTracking() {
-        string nogasmPort = _edgeToyInterceptorStorageService.DataInstance.nogasmData.NogasmPort;
-        _nogasmAnalyzerService.StartTrackingPort(nogasmPort);
+        if (_edgeToyInterceptorStorageService.DataInstance.nogasmData.IsNogasmTrackingEnabled) {
+            string nogasmPort = _edgeToyInterceptorStorageService.DataInstance.nogasmData.NogasmPort;
+            _nogasmAnalyzerService.StartTrackingPort(nogasmPort);
+        }
+
     }
 
     public void StopInterceptorTracking() {

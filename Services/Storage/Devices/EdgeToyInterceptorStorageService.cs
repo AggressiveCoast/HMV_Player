@@ -1,7 +1,7 @@
 using HMV_Player.Data;
 using HMV_Player.Data.Persistable;
 
-namespace HMV_Player.Services.Storage;
+namespace HMV_Player.Services.Storage.Devices;
 
 public class EdgeToyInterceptorStorageService : BaseSettingsStorageService<EdgeToyInterceptorStorageFile> {
     protected override string baseFolderPath => HMVPlayerAppPaths.ConfigDir;

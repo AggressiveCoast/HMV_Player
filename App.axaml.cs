@@ -15,11 +15,13 @@ using HMV_Player.MVVM.ViewModels.VideoManager;
 using HMV_Player.MVVM.ViewModels.VideoPlayer;
 using HMV_Player.Services;
 using HMV_Player.Services.Devices;
+using HMV_Player.Services.Devices.Controllers;
 using HMV_Player.Services.Devices.Lovense;
 using HMV_Player.Services.Devices.Lovense.API;
 using HMV_Player.Services.DialogueWindow;
 using HMV_Player.Services.Funscript;
 using HMV_Player.Services.Storage;
+using HMV_Player.Services.Storage.Devices;
 using HMV_Player.Services.VideoLibrary;
 using HMV_Player.Services.VideoPlayer;
 using LibVLCSharp.Shared;
@@ -35,35 +37,13 @@ public partial class App : Application {
     }
 
     public override void OnFrameworkInitializationCompleted() {
+
+        
+
         var collection = new ServiceCollection();
 
-        collection.AddSingleton<MainViewModel>();
-        collection.AddTransient<HomePageViewModel>();
-        collection.AddTransient<DevicesViewModel>();
-        collection.AddTransient<PlayVideoViewModel>();
-        collection.AddTransient<VideoManagerViewModel>();
-        collection.AddSingleton<ToyScriptPlayerService>();
-
-        collection.AddSingleton<VideoPlayerViewModel>();
-
-        collection.AddSingleton<NotificationContainerViewModel>();
-
-        initializeServices(collection);
-        initializeDevicePages(collection);
-        initializeFactories(collection);
-
-        collection.AddSingleton<ToysProcessorService>();
-
-        //TopLevel Provider
-        collection.AddSingleton<Func<TopLevel?>>(x => () => {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime topWindow) {
-                return TopLevel.GetTopLevel(topWindow.MainWindow);
-            }
-
-            return null;
-        });
-
-
+        DependencyInjection.SetupDependencyInjection(collection, ApplicationLifetime);
+        
         initializeApp(collection);
 
         base.OnFrameworkInitializationCompleted();
@@ -77,58 +57,5 @@ public partial class App : Application {
                 DataContext = provider.GetRequiredService<MainViewModel>()
             };
         }
-    }
-
-    private void initializeDevicePages(ServiceCollection collection) {
-        collection.AddSingleton<LovensePageViewModel>();
-        collection.AddSingleton<NogasmPageViewModel>();
-    }
-
-
-    private void initializeFactories(ServiceCollection collection) {
-        collection.AddSingleton<Func<ApplicationPageName, PageViewModel>>(x =>
-            name => name switch {
-                ApplicationPageName.Home => x.GetRequiredService<HomePageViewModel>(),
-                ApplicationPageName.PlayVideo => x.GetRequiredService<PlayVideoViewModel>(),
-                ApplicationPageName.Devices => x.GetRequiredService<DevicesViewModel>(),
-                ApplicationPageName.VideoManager => x.GetRequiredService<VideoManagerViewModel>(),
-                _ => throw new InvalidOperationException(),
-            });
-
-        collection.AddSingleton<PageFactory>();
-
-        collection.AddSingleton<Func<DeviceBrands, DevicesPageViewModel>>(x => name => name switch {
-            DeviceBrands.Lovense => x.GetRequiredService<LovensePageViewModel>(),
-            DeviceBrands.Nogasm => x.GetRequiredService<NogasmPageViewModel>(),
-            _ => throw new ArgumentOutOfRangeException(nameof(name), name, null)
-        });
-
-        collection.AddSingleton<DevicesPageFactory>();
-    }
-
-    private void initializeServices(ServiceCollection collection) {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-            collection.AddSingleton<IThumbnailExtractor, WindowsThumbNailExtractorService>();
-        }
-        else {
-            throw new PlatformNotSupportedException(RuntimeInformation.OSDescription);
-        }
-        
-
-        collection.AddTransient<NogasmAnalyzerService>();
-        collection.AddSingleton<ILovenseApiService, LovenseApiService>();
-
-        collection.AddSingleton<IVideoPlayer, VlcVideoPlayerService>();
-
-        collection.AddSingleton<ToyScriptProcessorsStorageService>();
-        collection.AddSingleton<VideoDataStorageService>();
-        collection.AddSingleton<UserSettingsStorageService>();
-        collection.AddSingleton<EdgeToyInterceptorStorageService>();
-
-        collection.AddSingleton<IDialogueService, DialogueService>();
-
-        collection.AddSingleton<FunscriptPlayerService>();
-
-        collection.AddSingleton<EdgeToyInterceptorService>();
     }
 }

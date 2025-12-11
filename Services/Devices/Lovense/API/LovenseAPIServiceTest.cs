@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HMV_Player.Services.Devices.Lovense.Request;
 using HMV_Player.Services.Devices.Lovense.Response;
 
 namespace HMV_Player.Services.Devices.Lovense.API;
@@ -14,6 +15,10 @@ public class LovenseAPIServiceTest : ILovenseApiService {
     }
 
     public Task<bool> PostStopPattern(LovenseStopPatterRequest lovenseStopPatterRequest) {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<bool> PostAction(LovenseFunctionRequest lovenseFunctionRequest) {
         throw new System.NotImplementedException();
     }
 

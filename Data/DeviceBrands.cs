@@ -4,4 +4,6 @@ public enum DeviceBrands {
     Invalid,
     Lovense,
     Nogasm,
+    TheHandy,
+    ButtplugIo
 }

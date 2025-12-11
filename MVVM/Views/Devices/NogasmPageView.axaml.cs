@@ -7,6 +7,7 @@ using HMV_Player.Data.Persistable;
 using HMV_Player.MVVM.ViewModels.Devices;
 using HMV_Player.Services.Devices;
 using HMV_Player.Services.Storage;
+using HMV_Player.Services.Storage.Devices;
 
 namespace HMV_Player.MVVM.Views.Devices;
 

@@ -29,21 +29,28 @@ public class LovenseApiService : ILovenseApiService {
     public async Task<bool> PostSetupPattern(LovenseSetupPatternRequest lovenseSetupPatternRequest) {
         var json = JsonSerializer.Serialize(lovenseSetupPatternRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("/command", content);
+        var response = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> PostPlayPattern(LovensePlayPatternRequest lovensePlayPatternRequest) {
         var json = JsonSerializer.Serialize(lovensePlayPatternRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("/command", content);
+        var response = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> PostStopPattern(LovenseStopPatterRequest lovenseStopPatterRequest) {
         var json = JsonSerializer.Serialize(lovenseStopPatterRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("/command", content);
+        var response = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> PostAction(LovenseFunctionRequest lovenseFunctionRequest) {
+        var json = JsonSerializer.Serialize(lovenseFunctionRequest);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
         return response.IsSuccessStatusCode;
     }
 

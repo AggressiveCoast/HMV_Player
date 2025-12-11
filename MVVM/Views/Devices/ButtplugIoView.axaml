@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:devices="clr-namespace:HMV_Player.MVVM.ViewModels.Devices"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HMV_Player.MVVM.Views.Devices.ButtplugIoView"
+             x:DataType="devices:ButtplugIoViewModel">
+    <Grid RowDefinitions="100, *">
+        <Button Classes="ConnectionButtons" Command="{Binding StartConnectionCommand}"
+                IsVisible="{Binding !IsConnected}">
+            <Viewbox Stretch="Uniform" StretchDirection="Both">
+                <TextBlock Text="Connect" />
+            </Viewbox>
+        </Button>
+        <Button Classes="ConnectionButtons" Command="{Binding StopConnectionCommand}"
+                IsVisible="{Binding IsConnected}">
+            <Viewbox Stretch="Uniform" StretchDirection="Both">
+                <TextBlock Text="Disconnect" />
+            </Viewbox>
+        </Button>
+        <Grid Grid.Row="1" Margin="10" IsVisible="{Binding IsConnected}">
+            <StackPanel Orientation="Vertical">
+                <Label Content="Select Device">
+                </Label>
+                <ComboBox ItemsSource="{Binding Devices}" HorizontalAlignment="Stretch" SelectionChanged="SelectingItemsControl_OnSelectionChanged"></ComboBox>
+            </StackPanel>
+            <!--<ListBox Margin="10" ItemsSource="{Binding MyItems}" SelectedItem="{Binding CurrentDevice}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Description}" Margin="10,0,0,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>-->
+
+
+        </Grid>
+
+    </Grid>
+
+    <UserControl.Styles>
+        <Style Selector="Button.ConnectionButtons">
+            <Setter Property="Grid.Row" Value="0"></Setter>
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="12, 6" />
+            <Setter Property="Width" Value="200"></Setter>
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Gray"></Setter>
+        </Style>
+    </UserControl.Styles>
+
+</UserControl>

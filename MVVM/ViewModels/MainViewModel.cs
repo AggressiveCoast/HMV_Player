@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HMV_Player.Data;
+using HMV_Player.Data.Persistable;
 using HMV_Player.Factories;
 using HMV_Player.MVVM.Models;
 using HMV_Player.MVVM.ViewModels.Base;
@@ -27,18 +28,22 @@ public partial class MainViewModel : ViewModelBase {
     public bool DevicesPageIsActive => CurrentPage.PageName == ApplicationPageName.Devices;
 
     public bool VideoManagerIsActive => CurrentPage.PageName == ApplicationPageName.VideoManager;
-    
+
     private readonly PageFactory _pageFactory;
     private readonly IVideoPlayer _videoPlayer;
     private readonly NotificationContainerViewModel _notificationContainerViewModel;
     private readonly VideoPlayerViewModel _videoPlayerViewModel;
+    private readonly ToyScriptPlayerService _toyScriptPlayerService;
     public NotificationContainerViewModel NotificationContainerViewModel => _notificationContainerViewModel;
 
-    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer,NotificationContainerViewModel notificationContainerViewModel, VideoPlayerViewModel  videoPlayerViewModel) {
+    public MainViewModel(PageFactory pageFactory, IVideoPlayer videoPlayer,
+        NotificationContainerViewModel notificationContainerViewModel, VideoPlayerViewModel videoPlayerViewModel,
+        ToyScriptPlayerService toyScriptPlayerService) {
         _notificationContainerViewModel = notificationContainerViewModel;
         _pageFactory = pageFactory;
-        _videoPlayer =  videoPlayer;
+        _videoPlayer = videoPlayer;
         _videoPlayerViewModel = videoPlayerViewModel;
+        _toyScriptPlayerService = toyScriptPlayerService;
         GoToHome();
     }
 
@@ -62,11 +67,12 @@ public partial class MainViewModel : ViewModelBase {
         CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageName.VideoManager);
     }
 
-    public void LoadVideoAndGoToVideoPage(VidCardModel vidCardModel) {
-        _videoPlayer.LoadMedia(vidCardModel.VideoPath);
+    public void LoadVideoAndGoToVideoPage(VideoFileData videoFileData) {
+        _toyScriptPlayerService.SetVideoFileData(videoFileData);
+        _videoPlayer.LoadMedia(videoFileData.FullPath);
         _videoPlayerViewModel.SetVideoPlayerState(VideoPlayerViewModel.VideoPlayerState.MediaLoaded);
         CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageName.PlayVideo);
-        
-        
     }
+    
+    
 }

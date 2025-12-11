@@ -23,12 +23,14 @@ public partial class VideoPlayerViewModel : ViewModelBase {
     public Action<MediaPlayer> OnPausedAction { get; set; }
     public Action<MediaPlayer> OnResumeAction { get; set; }
 
+    public Action OnEndedAction { get; set; }
+
     private bool _wasVideoPlayingBeforeSeeking;
 
     private bool _isSeeking;
 
     private int _volume;
-    
+
     private VideoPlayerState _state = VideoPlayerState.None;
 
     public int Volume {
@@ -61,6 +63,11 @@ public partial class VideoPlayerViewModel : ViewModelBase {
         Volume = _userSettingsStorageService.DataInstance.DefaultVolume;
         Player.Playing += PlayerOnPlaying;
         Player.Paused += PlayerOnPaused;
+        Player.EndReached += ((sender, args) => {
+            OnEndedAction?.Invoke();
+        });
+        
+        
 
         Player.SetPause(true);
         SliderTimeText = "00:00:00";
@@ -96,6 +103,7 @@ public partial class VideoPlayerViewModel : ViewModelBase {
         _isSeeking = true;
         _wasVideoPlayingBeforeSeeking = Player.State == VLCState.Playing;
         Player.SetPause(true);
+        _state = VideoPlayerState.Paused;
         IsPaused = true;
         OnPropertyChanged(nameof(IsPaused));
     }
@@ -105,6 +113,7 @@ public partial class VideoPlayerViewModel : ViewModelBase {
         if (_wasVideoPlayingBeforeSeeking) {
             Player.SetPause(false);
             IsPaused = false;
+            _state = VideoPlayerState.Playing;
             OnPropertyChanged(nameof(IsPaused));
         }
     }
@@ -138,7 +147,7 @@ public partial class VideoPlayerViewModel : ViewModelBase {
                 break;
         }
     }
-    
+
 
     public enum VideoPlayerState {
         None,

@@ -8,6 +8,14 @@ namespace HMV_Player.Services.Storage;
 public abstract class BaseSettingsStorageService<T> where T : class, new() {
     protected abstract string baseFolderPath { get; } 
     protected abstract string savePathFileName { get; }
+
+    public virtual void LoadObjectPostProcessing(T objectLoaded) {
+        
+    }
+
+    protected virtual void SaveObjectPreProcessing(T objectToSave) {
+        
+    }
     
     public T DataInstance;
 
@@ -35,7 +43,7 @@ public abstract class BaseSettingsStorageService<T> where T : class, new() {
                 instance = new T();
                 Save(instance);
             }
-
+            LoadObjectPostProcessing(instance);
             return instance;
         }
         catch(Exception e) {
@@ -45,7 +53,8 @@ public abstract class BaseSettingsStorageService<T> where T : class, new() {
         }
     }
     
-    private void Save<T>(T objectToSave)  {
+    private void Save(T objectToSave) {
+        SaveObjectPreProcessing(objectToSave);
         string fullFolderPath = BuildFullFolderPath();
         Directory.CreateDirectory(Path.GetDirectoryName(fullFolderPath)!);
         File.WriteAllText(fullFolderPath, JsonSerializer.Serialize(objectToSave, new JsonSerializerOptions {

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using HMV_Player.Data;
 using HMV_Player.Services;
 using HMV_Player.Services.Storage;
+using HMV_Player.Services.Storage.Devices;
 
 namespace HMV_Player.MVVM.ViewModels.Devices;
 
@@ -32,6 +33,14 @@ public class NogasmPageViewModel : DevicesPageViewModel {
         get => _edgeToyInterceptorStorageService.DataInstance.nogasmData.NogasmPort;
         set {
             _edgeToyInterceptorStorageService.DataInstance.nogasmData.NogasmPort = value;
+            _edgeToyInterceptorStorageService.Save();
+        }
+    }
+    
+    public bool IsNogasmTrackingEnabled {
+        get => _edgeToyInterceptorStorageService.DataInstance.nogasmData.IsNogasmTrackingEnabled;
+        set {
+            _edgeToyInterceptorStorageService.DataInstance.nogasmData.IsNogasmTrackingEnabled = value;
             _edgeToyInterceptorStorageService.Save();
         }
     }
@@ -80,6 +89,9 @@ public class NogasmPageViewModel : DevicesPageViewModel {
     public bool IsPortValid { get; set; }
 
     public async Task ValidatePortSection() {
+        if (IsNogasmTrackingEnabled) {
+            return;
+        }
         IsPortValid = await _nogasmAnalyzerService.ValidatePortAsync(SelectedPort, 1000); 
         OnPropertyChanged(nameof(IsPortValid));
 

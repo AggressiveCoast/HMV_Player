@@ -7,31 +7,67 @@
              x:Class="HMV_Player.MVVM.Views.DevicesView"
              x:DataType="devicePages:DevicesViewModel">
     <Grid RowDefinitions="100, *">
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
-            <Button Content="Lovense" Classes="nav-btn" Classes.active="{Binding IsLovensePageActive}"
+        <UniformGrid Grid.Row="0" Rows="1" Background="Gray">
+            <Button Classes="nav-btn" Classes.active="{Binding IsLovensePageActive}"
                     Command="{Binding GoToLovensePageCommand}">
+                <Viewbox Stretch="Uniform">
+                    <TextBlock Text="Lovense" />
+                </Viewbox>
             </Button>
-            <Button Content="Nogasm" Classes="nav-btn" Classes.active="{Binding IsNogasmPageActive}"
+            <Button Classes="nav-btn" Classes.active="{Binding IsNogasmPageActive}"
                     Command="{Binding GoToNogasmPageCommand}">
+                <Viewbox Stretch="Uniform">
+                    <TextBlock Text="Nogasm" />
+                </Viewbox>
             </Button>
-        </StackPanel>
-
-        <ContentControl Grid.Row="1" Content="{Binding CurrentDevicesPage}" />
+            <Button Classes="nav-btn" Classes.active="{Binding IsTheHandyPageActive}"
+                    Command="{Binding GoToTheHandyPageCommand}">
+                <Viewbox Stretch="Uniform">
+                    <TextBlock Text="The Handy" />
+                </Viewbox>
+            </Button>
+            <Button Classes="nav-btn" Classes.active="{Binding IsButtPlugIoPageActive}"
+                    Command="{Binding GoToButtplugIoPageCommand}">
+                <Viewbox Stretch="Uniform">
+                    <TextBlock Text="Buttplug.Io" />
+                </Viewbox>
+            </Button>
+        </UniformGrid>
+        <ContentControl Margin="5, 0, 0, 0" Grid.Row="1" HorizontalAlignment="Left" Content="{Binding CurrentDevicesPage}" />
 
     </Grid>
-    
+
     <UserControl.Styles>
+        <Style Selector="Button.nav-btn">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="CornerRadius" Value="20"></Setter>
+        </Style>
+
         <Style Selector="Button.nav-btn /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="Crimson"/>
-            <Setter Property="Foreground" Value="Aqua"/>
+            <Setter Property="Background" Value="Crimson" />
+            <Setter Property="Foreground" Value="Aqua" />
         </Style>
-        <Style Selector="Button.nav-btn.pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="DodgerBlue"/>
-            <Setter Property="Foreground" Value="White"/>
+
+        <Style Selector="Button.nav-btn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="DeepSkyBlue" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
+
+        <Style Selector="Button.nav-btn:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="DodgerBlue" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
         <Style Selector="Button.nav-btn.active /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="DodgerBlue"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="DodgerBlue" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.nav-btn.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="DeepSkyBlue" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
     </UserControl.Styles>
 </UserControl>

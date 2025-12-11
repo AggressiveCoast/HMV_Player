@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:HMV_Player.MVVM.ViewModels.Devices"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HMV_Player.MVVM.Views.Devices.TheHandyPageView"
+             x:DataType="vm:TheHandyPageViewModel">
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Label FontSize="20" Foreground="LightBlue" VerticalAlignment="Center" Content="Connection Key: "></Label>
+            <TextBox x:Name="ConnectionKeyTextBox" Text="{Binding ConnectionKey, Mode=TwoWay}"></TextBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

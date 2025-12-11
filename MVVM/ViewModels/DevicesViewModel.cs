@@ -20,11 +20,16 @@ public partial class DevicesViewModel : PageViewModel {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsLovensePageActive))]
     [NotifyPropertyChangedFor(nameof(IsNogasmPageActive))]
+    [NotifyPropertyChangedFor(nameof(IsTheHandyPageActive))]
     private DevicesPageViewModel _currentDevicesPage;
     
     public bool IsLovensePageActive => CurrentDevicesPage.DeviceBrand == DeviceBrands.Lovense;
     
     public bool IsNogasmPageActive => CurrentDevicesPage.DeviceBrand == DeviceBrands.Nogasm;
+    
+    public bool IsTheHandyPageActive => CurrentDevicesPage.DeviceBrand == DeviceBrands.TheHandy;
+
+    public bool IsButtPlugIoPageActive => CurrentDevicesPage.DeviceBrand == DeviceBrands.ButtplugIo;
     
     
     [RelayCommand]
@@ -35,5 +40,15 @@ public partial class DevicesViewModel : PageViewModel {
     [RelayCommand]
     private void GoToNogasmPage() {
         CurrentDevicesPage = _factory.GetDevicesPageViewModel(DeviceBrands.Nogasm);
+    }
+
+    [RelayCommand]
+    public void GoToTheHandyPage() {
+        CurrentDevicesPage = _factory.GetDevicesPageViewModel(DeviceBrands.TheHandy);
+    }
+    
+    [RelayCommand]
+    public void GoToButtplugIoPage() {
+        CurrentDevicesPage = _factory.GetDevicesPageViewModel(DeviceBrands.ButtplugIo);
     }
 }

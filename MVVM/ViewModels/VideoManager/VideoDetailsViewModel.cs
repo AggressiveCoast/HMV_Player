@@ -116,6 +116,6 @@ public partial class VideoDetailsViewModel : ViewModelBase {
 
     [RelayCommand]
     public void LoadVideoAndOpenPlayPage() {
-        _mainViewModel.LoadVideoAndGoToVideoPage(cardModel);
+        _mainViewModel.LoadVideoAndGoToVideoPage(videoFileData);
     }
 }
