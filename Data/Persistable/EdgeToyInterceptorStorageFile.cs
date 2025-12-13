@@ -7,6 +7,8 @@ public class EdgeToyInterceptorStorageFile {
         public bool IsNogasmTrackingEnabled { get; set; }
         public string NogasmPort { get; set; }
         public int OtherDevicePausePressureThreshold { get; set; } = 1000;
+        
+        public int NumberOfSecondsToStopBlocking { get; set; } = 10;
         public bool InterceptChannel1 { get; set; } = true;
         public bool InterceptChannel2 { get; set; }
         public bool InterceptChannel3 { get; set; }

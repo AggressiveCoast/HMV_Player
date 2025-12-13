@@ -86,6 +86,27 @@ public class NogasmPageViewModel : DevicesPageViewModel {
         }
     }
 
+    public string NogasmDeviceBlockingTimeInSeconds {
+        get => _edgeToyInterceptorStorageService.DataInstance.nogasmData.NumberOfSecondsToStopBlocking.ToString();
+        set {
+            string val = value;
+            if (string.IsNullOrWhiteSpace(val)) {
+                val = "10";
+            }
+
+            if (!char.IsAsciiDigit(val[^1])) {
+                val = val.Substring(0, val.Length - 1);
+            }
+
+            if (val.Length > 8) {
+                val = val.Substring(0, 8);
+            }
+            
+            _edgeToyInterceptorStorageService.DataInstance.nogasmData.NumberOfSecondsToStopBlocking = Int32.Parse(val);
+            _edgeToyInterceptorStorageService.Save();
+        }
+    }
+
     public bool IsPortValid { get; set; }
 
     public async Task ValidatePortSection() {

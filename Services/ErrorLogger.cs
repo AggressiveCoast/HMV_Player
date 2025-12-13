@@ -12,6 +12,9 @@ public class ErrorLogger {
         _logPath = HMVPlayerAppPaths.ErrorLogFilePath;
 
         Directory.CreateDirectory(Path.GetDirectoryName(_logPath)!);
+        if (File.Exists(_logPath)) {
+            File.Delete(_logPath);
+        }
     }
 
     public static void Log(Exception ex, string? context = null)

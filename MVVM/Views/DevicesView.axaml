@@ -33,7 +33,7 @@
                 </Viewbox>
             </Button>
         </UniformGrid>
-        <ContentControl Margin="5, 0, 0, 0" Grid.Row="1" HorizontalAlignment="Left" Content="{Binding CurrentDevicesPage}" />
+        <ContentControl Grid.Row="1" HorizontalAlignment="Left" Content="{Binding CurrentDevicesPage}" />
 
     </Grid>
 

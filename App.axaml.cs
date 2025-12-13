@@ -13,6 +13,7 @@ using HMV_Player.MVVM.ViewModels.Base;
 using HMV_Player.MVVM.ViewModels.Devices;
 using HMV_Player.MVVM.ViewModels.VideoManager;
 using HMV_Player.MVVM.ViewModels.VideoPlayer;
+using HMV_Player.MVVM.Views;
 using HMV_Player.Services;
 using HMV_Player.Services.Devices;
 using HMV_Player.Services.Devices.Controllers;
@@ -43,7 +44,6 @@ public partial class App : Application {
         var collection = new ServiceCollection();
 
         DependencyInjection.SetupDependencyInjection(collection, ApplicationLifetime);
-        
         initializeApp(collection);
 
         base.OnFrameworkInitializationCompleted();
@@ -53,6 +53,8 @@ public partial class App : Application {
         var provider = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+            NotificationService.Initialize(provider.GetRequiredService<NotificationContainerViewModel>());
+            
             desktop.MainWindow = new MVVM.Views.MainView(provider.GetRequiredService<UserSettingsStorageService>()) {
                 DataContext = provider.GetRequiredService<MainViewModel>()
             };

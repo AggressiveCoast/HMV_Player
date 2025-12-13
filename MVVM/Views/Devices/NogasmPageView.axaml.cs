@@ -37,6 +37,23 @@ public partial class NogasmPageView : UserControl {
                 args.Handled = true; 
             }
         }, handledEventsToo: true);
+        
+        RestoreControlTimeInSecondsTextBox.AddHandler(TextInputEvent, (sender, args) => {
+            if (!char.IsDigit(args.Text[0])) {
+                RestoreControlTimeInSecondsTextBox.Text =
+                    RestoreControlTimeInSecondsTextBox.Text.Substring(0, RestoreControlTimeInSecondsTextBox.Text.Length - 1);
+                args.Handled = true; 
+            }
+            if (!Int32.TryParse(RestoreControlTimeInSecondsTextBox.Text, out var result)) {
+                RestoreControlTimeInSecondsTextBox.Text = int.MaxValue.ToString();
+                args.Handled = true; 
+            }
+
+            if (string.IsNullOrWhiteSpace(RestoreControlTimeInSecondsTextBox.Text)) {
+                RestoreControlTimeInSecondsTextBox.Text = "0";
+                args.Handled = true; 
+            }
+        });
     }
 
     private void PortComboBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {

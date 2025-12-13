@@ -24,7 +24,7 @@ public abstract class BaseSettingsStorageService<T> where T : class, new() {
     }
 
     protected string BuildFullFolderPath() {
-        return baseFolderPath + "/" + savePathFileName + ".json";
+        return Path.Combine(baseFolderPath, savePathFileName + ".json");
     }
 
     protected T Load() {

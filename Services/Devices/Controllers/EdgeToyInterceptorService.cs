@@ -19,13 +19,15 @@ public class EdgeToyInterceptorService {
             string nogasmPort = _edgeToyInterceptorStorageService.DataInstance.nogasmData.NogasmPort;
             _nogasmAnalyzerService.StartTrackingPort(nogasmPort);
         }
+    }
 
+    public bool PressureThresholdReached() {
+        if (!_nogasmAnalyzerService.IsTrackingPort) return false;
+        return _nogasmAnalyzerService.CurrentPressure > _edgeToyInterceptorStorageService.DataInstance.nogasmData
+            .OtherDevicePausePressureThreshold;
     }
 
     public void StopInterceptorTracking() {
         _nogasmAnalyzerService.StopTrackingPort();
     }
-
-    public Action OnInterceptorThresholdCrossed;
-
 }

@@ -105,6 +105,7 @@ public static class DependencyInjection {
         collection.AddSingleton<EdgeToyInterceptorStorageService>();
         collection.AddSingleton<TheHandySettingsStorageService>();
         collection.AddSingleton<LovenseToySettingsStorageService>();
+        collection.AddTransient<ToyDataManager>();
 
         collection.AddSingleton<IDialogueService, DialogueService>();
 

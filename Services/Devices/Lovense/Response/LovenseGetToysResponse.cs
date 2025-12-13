@@ -33,7 +33,7 @@ public class LovenseGetToysData {
               ?? new Dictionary<string, LovenseToy>();
 }
 
-public class LovenseToy : IEquatable<LovenseToy>
+public class LovenseToy
 {
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
@@ -65,22 +65,5 @@ public class LovenseToy : IEquatable<LovenseToy>
         }
         
         return $"{Name} | {NickName}";
-    }
-
-    public bool Equals(LovenseToy? other) {
-        if (other is null) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return Id == other.Id;
-    }
-
-    public override bool Equals(object? obj) {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
-        return Equals((LovenseToy)obj);
-    }
-
-    public override int GetHashCode() {
-        return Id.GetHashCode();
     }
 }

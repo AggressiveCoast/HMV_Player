@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -28,29 +29,76 @@ public partial class LovensePageViewModel : DevicesPageViewModel {
     private readonly LovenseDeviceController _lovenseDeviceController;
     private readonly LovenseToySettingsStorageService _lovenseToySettingsStorageService;
     private readonly NotificationContainerViewModel _notificationContainerViewModel;
+
     public LovensePageViewModel(LovenseDeviceController lovenseApiService,
-        LovenseToySettingsStorageService lovenseToySettingsStorageService, NotificationContainerViewModel notificationContainerViewModel) {
+        LovenseToySettingsStorageService lovenseToySettingsStorageService,
+        NotificationContainerViewModel notificationContainerViewModel) {
         _lovenseDeviceController = lovenseApiService;
         _lovenseToySettingsStorageService = lovenseToySettingsStorageService;
         _notificationContainerViewModel = notificationContainerViewModel;
     }
 
-    public List<LovenseToy> ToyDataList {
-        get {
-            return _lovenseToySettingsStorageService.DataInstance.DevicesDict.Values.Select(device => device.RawData)
-                .ToList();
-        }
-    }
+    public ObservableCollection<LovenseToysSettingsFile.LovenseDevice> ToyDataList { get; set; } = new();
+
 
     public bool IsToysListEmpty => ToyDataList.Count == 0;
 
     public string NoAvailableToysMessage { get; set; }
 
-    public int BatteryAmount => CurrentSelectedLovenseToy == null ? 0 : CurrentSelectedLovenseToy.Battery;
+    public int BatteryAmount => CurrentSelectedLovenseToy == null ? 0 : CurrentSelectedLovenseToy.RawData.Battery;
+
+    public string DeviceIdText {
+        get {
+            if (CurrentSelectedLovenseToy == null) return string.Empty;
+            return "Device ID: " + CurrentSelectedLovenseToy.RawData.Id;
+        }
+    }
+
+    public string DeviceBatteryText {
+        get {
+            if (CurrentSelectedLovenseToy == null) return string.Empty;
+            return "Battery: " + CurrentSelectedLovenseToy.RawData.Battery + "%";
+        }
+    }
+
+    public string DeviceNickNameText {
+        get {
+            if (CurrentSelectedLovenseToy == null) return string.Empty;
+
+            return "Nickname: " + CurrentSelectedLovenseToy.RawData.NickName;
+        }
+    }
+
+    public string DeviceFunctionNamesText {
+        get {
+            if (CurrentSelectedLovenseToy == null) return string.Empty;
+
+            string functions = "";
+            foreach (var rawDataFullFunctionName in CurrentSelectedLovenseToy.RawData.FullFunctionNames) {
+                functions += rawDataFullFunctionName + ",";
+            }
+
+            if (!string.IsNullOrEmpty(functions)) {
+                functions = new string(functions.ToCharArray()[..^1]);
+            }
+            return "Functions: " + functions;
+        }
+    }
+
+    public List<string> ComboBoxPossibleOptions { get; set; } = new() {
+        "Channel 1",
+        "Channel 2",
+        "Channel 3"
+    };
+
+    public string SelectedChannelComboBoxValue {
+        get;
+        set;
+    }
 
     [ObservableProperty] private bool _isToyScriptEnabled;
 
-    [ObservableProperty] private LovenseToy? _currentSelectedLovenseToy;
+    [ObservableProperty] private LovenseToysSettingsFile.LovenseDevice? _currentSelectedLovenseToy;
 
     [RelayCommand]
     public async Task RefreshLovenseToysList() {
@@ -63,6 +111,7 @@ public partial class LovensePageViewModel : DevicesPageViewModel {
                 NoAvailableToysMessage = "Unable to connect to local Lovense Remote App";
             }
 
+            ToyDataList.Clear();
             // add any toys to storage if they don't exist
             if (results.Data.Toys.Count > 0) {
                 foreach (var keyValuePair in results.Data.Toys) {
@@ -78,16 +127,11 @@ public partial class LovensePageViewModel : DevicesPageViewModel {
                                 RawData = keyValuePair.Value
                             });
                     }
+
+                    ToyDataList.Add(_lovenseToySettingsStorageService.DataInstance.DevicesDict[keyValuePair.Key]);
                 }
             }
-            
-            // if can't find lovense toy connect, make sure to set the battery to 0 so it isn't misleading
-            foreach (var keyValuePair in _lovenseToySettingsStorageService.DataInstance.DevicesDict) {
-                if (!results.Data.Toys.ContainsKey(keyValuePair.Key)) {
-                    keyValuePair.Value.RawData.Battery = 0;
-                }
-            }
-            
+
 
             if (ToyDataList.Count > 0) {
                 CurrentSelectedLovenseToy = ToyDataList.First();
@@ -102,22 +146,25 @@ public partial class LovensePageViewModel : DevicesPageViewModel {
         OnPropertyChanged(nameof(IsToysListEmpty));
         OnPropertyChanged(nameof(NoAvailableToysMessage));
         OnPropertyChanged(nameof(BatteryAmount));
+        loadDataIntoXaml(CurrentSelectedLovenseToy);
+        refreshToyProperties();
     }
 
     [RelayCommand]
     public async Task TestDevice() {
         bool success = await _lovenseDeviceController.PostTestFunction(CurrentSelectedLovenseToy);
         if (!success) {
-            string toy = CurrentSelectedLovenseToy == null ? string.Empty : CurrentSelectedLovenseToy.Name;
-            _notificationContainerViewModel.ShowNotification("Device Test Failed",toy , NotificationType.Warning);
+            string toy = CurrentSelectedLovenseToy == null ? string.Empty : CurrentSelectedLovenseToy.RawData.Name;
+            _notificationContainerViewModel.ShowNotification("Device Test Failed", toy, NotificationType.Warning);
         }
     }
 
-    partial void OnCurrentSelectedLovenseToyChanged(LovenseToy toy) {
+    partial void OnCurrentSelectedLovenseToyChanged(LovenseToysSettingsFile.LovenseDevice? toy) {
         if (toy == null) return;
         var lovenseDevice = GetCurrentLovenseDevice();
 
         loadDataIntoXaml(lovenseDevice);
+        refreshToyProperties();
     }
 
     partial void OnIsToyScriptEnabledChanged(bool value) {
@@ -125,25 +172,46 @@ public partial class LovensePageViewModel : DevicesPageViewModel {
     }
 
     private LovenseToysSettingsFile.LovenseDevice GetCurrentLovenseDevice() {
-        return _lovenseToySettingsStorageService.DataInstance.DevicesDict[CurrentSelectedLovenseToy.Id];
+        return _lovenseToySettingsStorageService.DataInstance.DevicesDict[CurrentSelectedLovenseToy.RawData.Id];
     }
 
-    private void loadDataIntoXaml(LovenseToysSettingsFile.LovenseDevice currentLovenseDevice) {
+    private void loadDataIntoXaml(LovenseToysSettingsFile.LovenseDevice? currentLovenseDevice) {
+        if (currentLovenseDevice == null) return;
         IsToyScriptEnabled = currentLovenseDevice.Enabled;
+
+        // combo box text
+        try {
+            SelectedChannelComboBoxValue = ComboBoxPossibleOptions[(int)currentLovenseDevice.ApplicableChannel];
+        }
+        catch (IndexOutOfRangeException e) {
+            NotificationService.ShowNotification("Invalid Channel Stored.",
+                "Lovense Device has an invalid channel stored, resetting to 1.", NotificationType.Error);
+            currentLovenseDevice.ApplicableChannel = FunScriptChannel.Channel1;
+            SelectedChannelComboBoxValue =  "Channel 1";
+        }
     }
 
     public void OnPageLoaded() {
-        OnPropertyChanged(nameof(ToyDataList));
-        OnPropertyChanged(nameof(ToyDataList));
-        OnPropertyChanged(nameof(IsToysListEmpty));
-        if (ToyDataList.Count > 0) {
-            CurrentSelectedLovenseToy = ToyDataList.First();
-        }
-
         _ = RefreshLovenseToysList();
     }
 
     public void OnPageUnloaded() {
         _lovenseToySettingsStorageService.Save();
+    }
+
+    public void ScriptChannelComboBoxUpdated(int channel) {
+        CurrentSelectedLovenseToy.ApplicableChannel = (FunScriptChannel)channel;
+    }
+
+    private void refreshToyProperties() {
+        OnPropertyChanged(nameof(CurrentSelectedLovenseToy));
+        if (CurrentSelectedLovenseToy != null) {
+            OnPropertyChanged(nameof(SelectedChannelComboBoxValue));
+            OnPropertyChanged(nameof(DeviceIdText));
+            OnPropertyChanged(nameof(DeviceBatteryText));
+            OnPropertyChanged(nameof(DeviceFunctionNamesText));
+            OnPropertyChanged(nameof(DeviceNickNameText));
+
+        }
     }
 }

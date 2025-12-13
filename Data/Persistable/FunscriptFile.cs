@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace HMV_Player.Data;
 
 public class FunscriptFile {
@@ -17,7 +20,19 @@ public class FunscriptFile {
     }
 
     public class Action {
-        public double at { get; set; }
+        public double at { get; set; } // milli
         public int pos { get; set; }
+    }
+    
+    public class ActionTimeComparer : IComparer<Action>
+    {
+        public int Compare(Action? x, Action? y)
+        {
+            if (x is null && y is null) return 0;
+            if (x is null) return -1;
+            if (y is null) return 1;
+
+            return x.at.CompareTo(y.at);
+        }
     }
 }
