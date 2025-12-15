@@ -64,4 +64,48 @@ public class LovenseApiService : ILovenseApiService {
         var response = await httpResponse.Content.ReadFromJsonAsync<LovenseGetToysResponse>();
         return response!;
     }
+
+    public async Task<LovenseGetToyNameResponse> GetToyName() {
+        var json = JsonSerializer.Serialize(new LovenseGetToyNameRequest());
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
+        
+        var readAsStringAsync = await httpResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(readAsStringAsync);
+        var response = await httpResponse.Content.ReadFromJsonAsync<LovenseGetToyNameResponse>();
+        return response!;
+    }
+
+    public async Task<LovensePatternV2InitPlayResponse> PostPatternV2InitPlay(LovensePatternV2InitPlayRequest patternV2InitPlayRequest) {
+        var json = JsonSerializer.Serialize(patternV2InitPlayRequest);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
+        
+        var readAsStringAsync = await httpResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(readAsStringAsync);
+        var response = await httpResponse.Content.ReadFromJsonAsync<LovensePatternV2InitPlayResponse>();
+        return response!;
+    }
+
+    public async Task<LovensePatternV2PlayResponse> PostPatternV2Play(LovensePatternV2PlayRequest patternV2PlayRequest) {
+        var json = JsonSerializer.Serialize(patternV2PlayRequest);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
+        
+        var readAsStringAsync = await httpResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(readAsStringAsync);
+        var response = await httpResponse.Content.ReadFromJsonAsync<LovensePatternV2PlayResponse>();
+        return response!;
+    }
+
+    public async Task<LovensePatternV2StopResponse> PostPatternV2Stop(LovensePatternV2StopRequest lovensePatternV2StopRequest) {
+        var json = JsonSerializer.Serialize(lovensePatternV2StopRequest);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync(LovenseRemotePCDomain, content);
+        
+        var readAsStringAsync = await httpResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(readAsStringAsync);
+        var response = await httpResponse.Content.ReadFromJsonAsync<LovensePatternV2StopResponse>();
+        return response!;
+    }
 }

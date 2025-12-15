@@ -6,6 +6,7 @@ using HMV_Player.Data.Persistable;
 using HMV_Player.Services.Devices.Lovense.API;
 using HMV_Player.Services.Devices.Lovense.Request;
 using HMV_Player.Services.Devices.Lovense.Response;
+using HMV_Player.Services.Funscript.Lovense;
 
 namespace HMV_Player.Services.Devices.Controllers;
 
@@ -60,8 +61,9 @@ All:0~20
   "apiVer": 1
 }
      */
-    public async Task<bool> PostFunction(LovenseToysSettingsFile.LovenseDevice[] lovenseToys, int strength, double seconds) {
-        int strengthScaled =(int) (strength / 100f * 20);
+    public async Task<bool> PostFunction(LovenseToysSettingsFile.LovenseDevice[] lovenseToys, int strength,
+        double seconds) {
+        int strengthScaled = (int)(strength / 100f * 20);
         var request = new LovenseFunctionRequest {
             Toy = lovenseToys.Select(device => device.DeviceId).ToArray(),
             StopPrevious = 1,
@@ -77,6 +79,75 @@ All:0~20
         }
 
         return false;
+    }
+
+    public async Task<bool> PostPatternV2InitPlay(string[] deviceIds, List<LovensePatternAction> actions, int startTime,
+        int offsetTime) {
+        LovensePatternV2InitPlayRequest req = new LovensePatternV2InitPlayRequest();
+        if (deviceIds.Length == 0) return false;
+        if (deviceIds.Length == 1) {
+            req.toy = deviceIds[0];
+        }
+        else {
+            req.toy = deviceIds;
+        }
+
+        req.actions = actions.ToArray();
+        req.startTime = startTime;
+        req.offsetTime = offsetTime;
+
+        var response = await _lovenseApiService.PostPatternV2InitPlay(req);
+        return response.code == 200;
+    }
+
+    public async Task<bool> PostPatternV2Play(string[] deviceIds, int startTime,  int offsetTime) {
+        LovensePatternV2PlayRequest req = new();
+        if(deviceIds.Length == 0) return false;
+        if (deviceIds.Length == 1) {
+            req.toy = deviceIds[0];
+        }
+        else {
+            req.toy = deviceIds;
+        }
+
+        if (startTime != 0) {
+            req.startTime = startTime;
+        }
+        
+        req.offsetTime = offsetTime;
+            
+        var response = await _lovenseApiService.PostPatternV2Play(req);
+        return response.code == 200;
+    }
+
+    public async Task<bool> PostPatternV2Stop(string[] deviceIds) {
+        LovensePatternV2StopRequest req = new();
+        if(deviceIds.Length == 0) return false;
+        if (deviceIds.Length == 1) {
+            req.toy = deviceIds[0];
+        }
+        else {
+            req.toy = deviceIds;
+        }
+            
+        var response = await _lovenseApiService.PostPatternV2Stop(req);
+        return response.code == 200;
+    }
+
+
+    public async Task<int> Ping() {
+        DateTime now = DateTime.Now;
+        LovenseGetToyNameResponse response = await _lovenseApiService.GetToyName();
+        DateTime requestReceived = DateTime.Now;
+        int totalTime = (int) requestReceived.Subtract(now).TotalMilliseconds;
+        return totalTime;
+    }
+
+    public async Task<int> FunctionPing(LovenseToysSettingsFile.LovenseDevice[] applicableLovenseToys) {
+        DateTime now = DateTime.Now;
+        await PostFunction(applicableLovenseToys, 0, 1);
+        DateTime requestReceived = DateTime.Now;
+        return  (int)requestReceived.Subtract(now).TotalMilliseconds;
     }
 
     public async Task<LovenseGetToysResponse> GetToys() {

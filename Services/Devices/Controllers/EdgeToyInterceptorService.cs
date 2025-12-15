@@ -1,4 +1,5 @@
 using System;
+using HMV_Player.Data;
 using HMV_Player.Services.Funscript;
 using HMV_Player.Services.Storage;
 using HMV_Player.Services.Storage.Devices;
@@ -21,7 +22,19 @@ public class EdgeToyInterceptorService {
         }
     }
 
-    public bool PressureThresholdReached() {
+    public bool PressureThresholdReached(FunScriptChannel channel) {
+        if (channel == FunScriptChannel.Channel1 &&
+            !_edgeToyInterceptorStorageService.DataInstance.nogasmData.InterceptChannel1) {
+            return false;
+        }
+        if (channel == FunScriptChannel.Channel2 &&
+            !_edgeToyInterceptorStorageService.DataInstance.nogasmData.InterceptChannel2) {
+            return false;
+        }
+        if (channel == FunScriptChannel.Channel3 &&
+            !_edgeToyInterceptorStorageService.DataInstance.nogasmData.InterceptChannel3) {
+            return false;
+        }
         if (!_nogasmAnalyzerService.IsTrackingPort) return false;
         return _nogasmAnalyzerService.CurrentPressure > _edgeToyInterceptorStorageService.DataInstance.nogasmData
             .OtherDevicePausePressureThreshold;

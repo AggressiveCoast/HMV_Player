@@ -21,9 +21,9 @@ public class ToyScriptPlayerService {
     private readonly ToyDataManager _toyDataManager;
     private VideoFileData _videoFileData;
 
-    private FunscriptPlayer _funscriptPlayerChannel1;
-    private FunscriptPlayer _funscriptPlayerChannel2;
-    private FunscriptPlayer _funscriptPlayerChannel3;
+    private FunscriptPlayer? _funscriptPlayerChannel1;
+    private FunscriptPlayer? _funscriptPlayerChannel2;
+    private FunscriptPlayer? _funscriptPlayerChannel3;
 
     private int _script1LastIndex;
     private int _script2LastIndex;
@@ -34,11 +34,13 @@ public class ToyScriptPlayerService {
     private Task _processingTask;
     private IVideoPlayer _videoPlayer;
 
-    public ToyScriptPlayerService(VideoPlayerViewModel videoPlayerViewModel, LovenseDeviceController lovenseController, IVideoPlayer videoPlayer,
+    public ToyScriptPlayerService(VideoPlayerViewModel videoPlayerViewModel, LovenseDeviceController lovenseController,
+        EdgeToyInterceptorService edgeToyInterceptorService, IVideoPlayer videoPlayer,
         ToyDataManager toyDataManager) {
         _lovenseController = lovenseController;
         _toyDataManager = toyDataManager;
         _videoPlayer = videoPlayer;
+        _edgeToyInterceptorService = edgeToyInterceptorService;
         videoPlayerViewModel.OnMediaLoaded += player => { PrimeProcessesing(); };
         videoPlayerViewModel.OnPausedAction += player => { PauseProcessing(); };
         videoPlayerViewModel.OnResumeAction += player => { ResumeProcessing(); };
@@ -49,17 +51,20 @@ public class ToyScriptPlayerService {
         Console.WriteLine($"Started");
         var funscriptFile1 = LoadFunScript(_videoFileData.FunscriptChannel1FileLocation);
         if (funscriptFile1 != null) {
-            _funscriptPlayerChannel1 = new FunscriptPlayer(FunScriptChannel.Channel1, funscriptFile1, _lovenseController, _edgeToyInterceptorService, _toyDataManager);
+            _funscriptPlayerChannel1 = new FunscriptPlayer(FunScriptChannel.Channel1, funscriptFile1,
+                _lovenseController, _edgeToyInterceptorService, _toyDataManager);
         }
 
         var funscriptFile2 = LoadFunScript(_videoFileData.FunscriptChannel2FileLocation);
         if (funscriptFile2 != null) {
-            _funscriptPlayerChannel2 = new FunscriptPlayer(FunScriptChannel.Channel2,funscriptFile2, _lovenseController, _edgeToyInterceptorService, _toyDataManager);
+            _funscriptPlayerChannel2 = new FunscriptPlayer(FunScriptChannel.Channel2, funscriptFile2,
+                _lovenseController, _edgeToyInterceptorService, _toyDataManager);
         }
 
         var funscriptFile3 = LoadFunScript(_videoFileData.FunscriptChannel3FileLocation);
         if (funscriptFile3 != null) {
-            _funscriptPlayerChannel3 = new FunscriptPlayer(FunScriptChannel.Channel3,funscriptFile3, _lovenseController, _edgeToyInterceptorService, _toyDataManager);
+            _funscriptPlayerChannel3 = new FunscriptPlayer(FunScriptChannel.Channel3, funscriptFile3,
+                _lovenseController, _edgeToyInterceptorService, _toyDataManager);
         }
     }
 
@@ -67,6 +72,9 @@ public class ToyScriptPlayerService {
     private void PauseProcessing() {
         Console.WriteLine($"Paused");
         _isVideoPlaying = false;
+        _funscriptPlayerChannel1?.PauseDevices();
+        _funscriptPlayerChannel2?.PauseDevices();
+        _funscriptPlayerChannel3?.PauseDevices();
         StopProcessing();
     }
 
@@ -83,7 +91,6 @@ public class ToyScriptPlayerService {
     }
 
     private void StopProcessing() {
-        Console.WriteLine($"Stop");
         _ = stopProcessingTask();
         _edgeToyInterceptorService.StopInterceptorTracking();
     }
@@ -92,14 +99,15 @@ public class ToyScriptPlayerService {
         try {
             while (true) {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (_isVideoPlaying) {
-                    long currentVideoTime = _videoPlayer.Player.Time;
-                    _funscriptPlayerChannel1?.ProcessFunscript(currentVideoTime, _cancellationTokenSource.Token);
-                    _funscriptPlayerChannel2?.ProcessFunscript(currentVideoTime, _cancellationTokenSource.Token);
-                    _funscriptPlayerChannel3?.ProcessFunscript(currentVideoTime, _cancellationTokenSource.Token);
-                }
+                long currentVideoTime = _videoPlayer.Player.Time;
+                _funscriptPlayerChannel1?.ProcessFunscript(currentVideoTime, _isVideoPlaying,
+                    _cancellationTokenSource.Token);
+                _funscriptPlayerChannel2?.ProcessFunscript(currentVideoTime, _isVideoPlaying,
+                    _cancellationTokenSource.Token);
+                _funscriptPlayerChannel3?.ProcessFunscript(currentVideoTime, _isVideoPlaying,
+                    _cancellationTokenSource.Token);
 
-                await Task.Delay(50, cancellationToken);
+                await Task.Delay(100, cancellationToken);
             }
         }
         catch (OperationCanceledException) {

@@ -36,4 +36,20 @@ public class LovenseAPIServiceTest : ILovenseApiService {
 
         return Task.FromResult(response);
     }
+
+    public Task<LovenseGetToyNameResponse> GetToyName() {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<LovensePatternV2InitPlayResponse> PostPatternV2InitPlay(LovensePatternV2InitPlayRequest patternV2InitPlayRequest) {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<LovensePatternV2PlayResponse> PostPatternV2Play(LovensePatternV2PlayRequest patternV2PlayRequest) {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<LovensePatternV2StopResponse> PostPatternV2Stop(LovensePatternV2StopRequest lovensePatternV2StopRequest) {
+        throw new System.NotImplementedException();
+    }
 }

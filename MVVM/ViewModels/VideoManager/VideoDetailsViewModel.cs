@@ -31,7 +31,7 @@ public partial class VideoDetailsViewModel : ViewModelBase {
         _mainViewModel = mainViewModel;
         _videoDataStorageService = videoDataStorageService;
         _dialogueService = dialogueService;
-        videoFileData = _videoDataStorageService.DataInstance.GetFileData(cardModel.VideoPath);
+        videoFileData = _videoDataStorageService.DataInstance.VideoFileDatasDict[cardModel.VideoPath];
     }
 
     [ObservableProperty] private Bitmap? _thumbnailImg;

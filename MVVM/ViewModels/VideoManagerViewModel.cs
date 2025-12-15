@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Skia.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HMV_Player.Controls;
 using HMV_Player.Controls.VideoManagement;
 using HMV_Player.Data;
 using HMV_Player.MVVM.Models;
 using HMV_Player.MVVM.ViewModels.Base;
 using HMV_Player.MVVM.ViewModels.VideoManager;
+using HMV_Player.Services;
 using HMV_Player.Services.DialogueWindow;
 using HMV_Player.Services.Storage;
 using HMV_Player.Services.VideoLibrary;
@@ -24,18 +27,22 @@ public partial class VideoManagerViewModel : PageViewModel {
     private readonly IDialogueService _dialogueService;
     private readonly MainViewModel _mainViewModel;
 
-    private Func<VideosLoadingOverlayViewModel.VideoLibraryBuildMode, VideosLoadingOverlayViewModel> _videoLoadingOverlayViewModelFactory;
+    private readonly Func<VideosLoadingOverlayViewModel> _videoLoadingOverlayViewModelFactory;
 
+    private Action OnFinishVideoRegistryAction;
     public VideoManagerViewModel(VideoDataStorageService videoDataStorageService,
         IThumbnailExtractor thumbNailExtractorService, IDialogueService dialogueService, MainViewModel mainViewModel) {
         _mainViewModel = mainViewModel;
-        _videoLoadingOverlayViewModelFactory = (videoLibraryBuildMode) => {
+
+        OnFinishVideoRegistryAction = () => {
+            refreshVideoCards();
+            CurrentVideoLoadingOverlayViewModel = null;
             OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
-            return new VideosLoadingOverlayViewModel(videoDataStorageService, thumbNailExtractorService, () => {
-                CurrentVideoLoadingOverlayViewModel = null;
-                refreshVideoCards();
-                OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
-            }, videoLibraryBuildMode);
+        };
+        
+        _videoLoadingOverlayViewModelFactory = () => {
+            OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
+            return new VideosLoadingOverlayViewModel(videoDataStorageService, thumbNailExtractorService);
             
         };
         _dialogueService = dialogueService;
@@ -65,7 +72,7 @@ public partial class VideoManagerViewModel : PageViewModel {
 
     public bool IsVideoDetailsOverlayActive => CurrentVideoDetailsOverallViewModel != null;
 
-    public bool IsVideoLoadingOverlayActive => _currentVideoLoadingOverlayViewModel != null;
+    public bool IsVideoLoadingOverlayActive => CurrentVideoLoadingOverlayViewModel != null;
 
 
     [RelayCommand]
@@ -83,37 +90,44 @@ public partial class VideoManagerViewModel : PageViewModel {
     [RelayCommand]
     public async Task OnSelectBaseDirectoryClicked() {
         string? baseDir = await _dialogueService.OpenFolderSelectorAsync("Select Base Directory");
-        if (baseDir == null) return;
-
-
+        if (baseDir == null || baseDir == _videoDataStorageService.DataInstance.BaseLocation) return;
+        
         _videoDataStorageService.DataInstance.BaseLocation = baseDir;
         _videoDataStorageService.Save();
-
         OnPropertyChanged(nameof(CurrentVideoBaseDirectoryDisplayString));
+
+        RebuildVideoRegistry();
     }
 
     [RelayCommand]
     public void RebuildVideoRegistry() {
-        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke(VideosLoadingOverlayViewModel.VideoLibraryBuildMode.FullRebuild);
+        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke();
         OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
+        _ = CurrentVideoLoadingOverlayViewModel.RebuildVideoRegistry(OnFinishVideoRegistryAction);
     }
 
     [RelayCommand]
     public void RefreshVideoRegistry() {
-        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke(VideosLoadingOverlayViewModel.VideoLibraryBuildMode.OnlyMissingFiles);
+        CurrentVideoLoadingOverlayViewModel = _videoLoadingOverlayViewModelFactory.Invoke();
         OnPropertyChanged(nameof(IsVideoLoadingOverlayActive));
+        _ = CurrentVideoLoadingOverlayViewModel.RefreshVideos(OnFinishVideoRegistryAction);
     }
 
     private void refreshVideoCards() {
         ObservableCollection<VidCardModel> vidCards = new();
-        foreach (var dataInstanceVideoFileData in _videoDataStorageService.DataInstance.VideoFileDatas) {
+        foreach (var dataInstanceVideoFileData in _videoDataStorageService.DataInstance.VideoFileDatasDict.Values) {
+            if (!File.Exists(dataInstanceVideoFileData.FullPath)) {
+                NotificationService.ShowNotification("Unable to find video", $"Path: {dataInstanceVideoFileData.FullPath}", NotificationType.Warning);
+                _videoDataStorageService.DataInstance.VideoFileDatasDict.Remove(dataInstanceVideoFileData.FullPath);
+                continue;
+            }
             string thumbNailPath = dataInstanceVideoFileData.ThumbnailPath;
             Bitmap thumbnail = null;
             try {
                 thumbnail = new Bitmap(@thumbNailPath);
             }
             catch (Exception ex) {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                Console.WriteLine(ex.ToString());
             }
             vidCards.Add(new VidCardModel() { // add to temp collection to avoid modified collection exception on actual ui collection
                 Title =  dataInstanceVideoFileData.Name,
@@ -123,5 +137,6 @@ public partial class VideoManagerViewModel : PageViewModel {
         }
 
         VidCards = vidCards;
+        OnPropertyChanged(nameof(VidCards));
     }
 }
